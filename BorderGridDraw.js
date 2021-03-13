@@ -64,7 +64,7 @@ var GridVisualization = function(width, height, gridWidth, gridHeight, context, 
                         // Does the inversion of y positioning because of html5
                         // canvas y direction is from top to bottom. But we
                         // normally keep y-axis in plots from bottom to top.
-                        p.y = gridHeight - p.y - 1;
+                        //p.y = gridHeight - p.y - 1;
 
                         // if a handler exists, add coordinates for the portrayalLayer index
                         (interactionHandler) ? interactionHandler.mouseoverLookupTable.set(p.x, p.y, i) : null;
@@ -90,7 +90,7 @@ var GridVisualization = function(width, height, gridWidth, gridHeight, context, 
         this.drawSpheres = function(influenceSpheres) {
                 for (var i in influenceSpheres) {
                         var sphere = influenceSpheres[i];
-                        sphere.y = gridHeight - sphere.y - 1;
+                        //sphere.y = gridHeight - sphere.y - 1;
 
                         this.drawPerfectCircle(sphere.x, sphere.y, sphere.radius,
                                                sphere.fillColor, sphere.strokeColor);
