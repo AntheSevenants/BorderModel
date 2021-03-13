@@ -86,6 +86,17 @@ var GridVisualization = function(width, height, gridWidth, gridHeight, context, 
                 (interactionHandler) ? interactionHandler.updateMouseListeners(portrayalLayer): null;
         };
 
+        // Draw influence spheres
+        this.drawSpheres = function(influenceSpheres) {
+                for (var i in influenceSpheres) {
+                        var sphere = influenceSpheres[i];
+                        sphere.y = gridHeight - sphere.y - 1;
+
+                        this.drawPerfectCircle(sphere.x, sphere.y, sphere.radius,
+                                               sphere.fillColor, sphere.strokeColor);
+                }
+        };
+
         // DRAWING METHODS
         // =====================================================================
 
@@ -305,6 +316,7 @@ var GridVisualization = function(width, height, gridWidth, gridHeight, context, 
 
         this.drawGridLines = function() {
                 context.beginPath();
+                context.lineWidth = 1;
                 context.strokeStyle = "#eee";
                 maxX = cellWidth * gridWidth;
                 maxY = cellHeight * gridHeight;
@@ -320,6 +332,28 @@ var GridVisualization = function(width, height, gridWidth, gridHeight, context, 
                         context.lineTo(x+0.5, maxY);
                 }
 
+                context.stroke();
+        };
+
+        /**
+        Draw perfect circles
+        */
+
+        this.drawPerfectCircle = function (x, y, radius, stroke_color, fill_color) {
+                var cx = (x + 0.5) * cellWidth;
+                var cy = (y + 0.5) * cellHeight;
+                var rx = radius * cellWidth;
+                var ry = radius * cellHeight;
+
+                console.log(cx + " " + cy + " " + rx + " " + ry);
+
+                context.beginPath();
+                context.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+                context.fillStyle = stroke_color;
+                context.fill();
+                context.closePath();
+
+                context.strokeStyle = stroke_color;
                 context.stroke();
         };
 
