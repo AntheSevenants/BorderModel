@@ -51,7 +51,7 @@ class BorderModel(Model):
 			self.grid.place_agent(agent, (x, y))
 
 		self.init_influence_spheres()
-		print(self.influence_spheres[0].coordinates)
+		#print(self.influence_spheres[0].coordinates)
 
 	def init_influence_spheres(self):
 		self.influence_spheres = []
@@ -70,6 +70,10 @@ class BorderModel(Model):
 # http://rosettacode.org/wiki/Bitmap/Midpoint_circle_algorithm#Python
 class InfluenceCircle():
 	def __init__(self, x0, y0, radius):
+		self.x = x0
+		self.y = y0
+		self.radius = radius
+
 		self.coordinates = []
 
 		f = 1 - radius
