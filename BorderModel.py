@@ -1,4 +1,6 @@
 # Local imports
+import math
+
 from mesa import Agent, Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
@@ -39,18 +41,8 @@ class BorderModel(Model):
 		self.schedule = RandomActivation(self)
 		self.running = True
 		
-		# Create agents
-		for i in range(self.num_agents):
-			agent = BorderAgent(i, self)
-			# Add agent to the scheduler
-			self.schedule.add(agent)
-			
-			# Place the newly created agent on the grid
-			x = self.random.randrange(self.grid.width)
-			y = self.random.randrange(self.grid.height)
-			self.grid.place_agent(agent, (x, y))
-
 		self.init_influence_spheres()
+		self.init_agents()
 		#print(self.influence_spheres[0].coordinates)
 
 	def init_influence_spheres(self):
@@ -69,48 +61,52 @@ class BorderModel(Model):
 					  "y": 80,
 					  "radius": 7,
 					  "population": 5 } ]
+
 		for sphere in spheres:
-			influence_sphere = InfluenceCircle(sphere["x"], sphere["y"], sphere["radius"])
+			influence_sphere = InfluenceCircle(sphere["x"], sphere["y"], sphere["radius"],
+											   sphere["population"])
 			self.influence_spheres.append(influence_sphere)
+
+	def init_agents(self):
+		# Create agents based on population count in the influence spheres
+		agent_no = 0
+		for influence_sphere in self.influence_spheres:
+			# Create agents
+			for i in range(influence_sphere.population):
+				agent = BorderAgent(agent_no, self)
+				# Add agent to the scheduler
+				self.schedule.add(agent)
+				
+				# Place the newly created agent on the grid
+				location = self.random.choice(influence_sphere.coordinates)
+				self.grid.place_agent(agent, (location[0], location[1]))
+
+				agent_no += 1
 
 	def step(self):
 		self.schedule.step()
 
 # http://rosettacode.org/wiki/Bitmap/Midpoint_circle_algorithm#Python
 class InfluenceCircle():
-	def __init__(self, x0, y0, radius):
+	def __init__(self, x0, y0, radius, population):
 		self.x = x0
 		self.y = y0
 		self.radius = radius
+		self.population = population
 
 		self.coordinates = []
 
-		f = 1 - radius
-		ddf_x = 1
-		ddf_y = -2 * radius
-		x = 0
-		y = radius
-		self.add_coords(x0, y0 + radius)
-		self.add_coords(x0, y0 - radius)
-		self.add_coords(x0 + radius, y0)
-		self.add_coords(x0 - radius, y0)
-	
-		while x < y:
-			if f >= 0: 
-				y -= 1
-				ddf_y += 2
-				f += ddf_y
-			x += 1
-			ddf_x += 2
-			f += ddf_x    
-			self.add_coords(x0 + x, y0 + y)
-			self.add_coords(x0 - x, y0 + y)
-			self.add_coords(x0 + x, y0 - y)
-			self.add_coords(x0 - x, y0 - y)
-			self.add_coords(x0 + y, y0 + x)
-			self.add_coords(x0 - y, y0 + x)
-			self.add_coords(x0 + y, y0 - x)
-			self.add_coords(x0 - y, y0 - x)
+		for j in range(x0 - radius, x0 + radius + 1):
+			for k in range(y0 - radius, y0 + radius + 1):
+				if self.distance({ "x": j, "y": k }, { "x": x0, "y": y0 }) <= radius:
+					self.coordinates.append([ j, k ])
+
+	def distance(self, p1, p2):
+		dx = p2["x"] - p1["x"];
+		dx *= dx;
+		dy = p2["y"] - p1["y"];
+		dy *= dy;
+		return math.ceil(math.sqrt(dx + dy));
 
 	def add_coords(self, x, y):
 		self.coordinates.append([x, y])
