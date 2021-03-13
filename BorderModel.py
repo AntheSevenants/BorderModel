@@ -9,7 +9,8 @@ class BorderAgent(Agent):
 	def __init__(self, unique_id, influence_sphere, model):
 		super().__init__(unique_id, model)
 		self.influence_sphere = influence_sphere
-		
+		self.model = model
+
 		self.sound = 1
 		self.sound_repository = []
 		self.adopt_modifier = 1
@@ -22,6 +23,11 @@ class BorderAgent(Agent):
 		self.speak()
 		
 	def move(self):
+		distance_from_center = math.hypot(self.pos[0] - self.influence_sphere.x, 
+										  self.pos[1] - self.influence_sphere.y)
+		if distance_from_center >= self.influence_sphere.radius - 1:
+			return
+
 		# TODO: use Moore or not? (Moore = diagonal -- currently using Von Neumann)
 		possible_steps = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=True)
 		new_position = self.random.choice(possible_steps)
