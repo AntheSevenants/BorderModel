@@ -23,14 +23,17 @@ class BorderAgent(Agent):
 		self.speak()
 		
 	def move(self):
-		distance_from_center = math.hypot(self.pos[0] - self.influence_sphere.x, 
-										  self.pos[1] - self.influence_sphere.y)
-		if distance_from_center >= self.influence_sphere.radius - 1:
-			return
-
 		# TODO: use Moore or not? (Moore = diagonal -- currently using Von Neumann)
 		possible_steps = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=True)
-		new_position = self.random.choice(possible_steps)
+		legal_steps = []
+		for possible_step in possible_steps:
+			distance_from_center = math.hypot(possible_step[0] - self.influence_sphere.x, 
+										  	  possible_step[1] - self.influence_sphere.y)
+			
+			if distance_from_center <= self.influence_sphere.radius:
+				legal_steps.append(possible_step)
+
+		new_position = self.random.choice(legal_steps)
 		self.model.grid.move_agent(self, new_position)
 	
 	def speak(self):
