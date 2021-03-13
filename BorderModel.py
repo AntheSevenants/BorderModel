@@ -59,7 +59,13 @@ class BorderModel(Model):
 		# Create influence spheres
 		spheres = [ { "x": 50,
 					  "y": 50,
-					  "radius": 10 } ]
+					  "radius": 10 },
+					{ "x": 20,
+					  "y": 20,
+					  "radius": 15 },
+					{ "x": 70,
+					  "y": 80,
+					  "radius": 7 } ]
 		for sphere in spheres:
 			influence_sphere = InfluenceCircle(sphere["x"], sphere["y"], sphere["radius"])
 			self.influence_spheres.append(influence_sphere)
