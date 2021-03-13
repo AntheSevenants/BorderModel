@@ -1,4 +1,4 @@
-from mesa.visualization.modules import CanvasGrid
+from BorderViz import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
 from BorderModel import BorderModel
 
@@ -6,14 +6,26 @@ def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
                  "Color": "red",
                  "Filled": "true",
-                 "Layer": 0,
+                 "Layer": 1,
                  "r": 0.5}
     return portrayal
 
-grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
+def influence_sphere_portrayal(influence_sphere):
+    portrayal = {"Shape": "rect",
+                 "Color": "rgba(208,194,232, 0.5)",
+                 "Filled": "true",
+                 "Layer": 0,
+                 "w": 0.9,
+                 "h": 0.9}
+    return portrayal
+
+width = 100
+height = 100
+
+grid = CanvasGrid(agent_portrayal, influence_sphere_portrayal, width, height, 1000, 1000)
 server = ModularServer(BorderModel,
                        [grid],
                        "Border Model",
-                       {"num_agents":100, "width":10, "height":10})
+                       {"num_agents":100, "width": width, "height": height})
 server.port = 8521 # The default
 server.launch()
