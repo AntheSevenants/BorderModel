@@ -63,6 +63,7 @@ class CanvasGrid(VisualizationElement):
     def __init__(
         self,
         portrayal_method,
+        influence_sphere_portrayal_method,
         grid_width,
         grid_height,
         canvas_width=500,
@@ -79,6 +80,7 @@ class CanvasGrid(VisualizationElement):
 
         """
         self.portrayal_method = portrayal_method
+        self.influence_sphere_portrayal_method = influence_sphere_portrayal_method
         self.grid_width = grid_width
         self.grid_height = grid_height
         self.canvas_width = canvas_width
@@ -101,5 +103,13 @@ class CanvasGrid(VisualizationElement):
                         portrayal["x"] = x
                         portrayal["y"] = y
                         grid_state[portrayal["Layer"]].append(portrayal)
+
+        for influence_sphere in model.influence_spheres:
+            for coords_pairs in influence_sphere.coordinates:
+                portrayal = self.influence_sphere_portrayal_method(influence_sphere)
+                portrayal["x"] = coords_pairs[0]
+                portrayal["y"] = coords_pairs[1]
+                print(portrayal)
+                grid_state[portrayal["Layer"]].append(portrayal)
 
         return grid_state
