@@ -58,8 +58,8 @@ class CanvasGrid(VisualizationElement):
 
     """
 
-    package_includes = ["CanvasModule.js", "InteractionHandler.js"]
-    local_includes = ["BorderGridDraw.js"]
+    package_includes = ["InteractionHandler.js"]
+    local_includes = ["BorderGridDraw.js", "BorderCanvasModule.js"]
 
     def __init__(
         self,
@@ -69,6 +69,7 @@ class CanvasGrid(VisualizationElement):
         grid_height,
         canvas_width=500,
         canvas_height=500,
+        draw_sphere_literal=False
     ):
         """Instantiate a new CanvasGrid.
 
@@ -86,6 +87,7 @@ class CanvasGrid(VisualizationElement):
         self.grid_height = grid_height
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
+        self.draw_sphere_literal = draw_sphere_literal
 
         new_element = "new CanvasModule({}, {}, {}, {})".format(
             self.canvas_width, self.canvas_height, self.grid_width, self.grid_height
@@ -94,7 +96,9 @@ class CanvasGrid(VisualizationElement):
         self.js_code = "elements.push(" + new_element + ");"
 
     def render(self, model):
-        grid_state = defaultdict(list)
+        grid_state  = { "cells": defaultdict(list),
+                        "spheres": [] }
+
         for x in range(model.grid.width):
             for y in range(model.grid.height):
                 cell_objects = model.grid.get_cell_list_contents([(x, y)])
@@ -103,14 +107,21 @@ class CanvasGrid(VisualizationElement):
                     if portrayal:
                         portrayal["x"] = x
                         portrayal["y"] = y
-                        grid_state[portrayal["Layer"]].append(portrayal)
+                        grid_state["cells"][portrayal["Layer"]].append(portrayal)
+
+        if self.draw_sphere_literal:
+            for influence_sphere in model.influence_spheres:
+                for coords_pairs in influence_sphere.coordinates:
+                    portrayal = self.influence_sphere_portrayal_method(influence_sphere)
+                    portrayal["x"] = coords_pairs[0]
+                    portrayal["y"] = coords_pairs[1]
+                    grid_state["cells"][portrayal["Layer"]].append(portrayal)
 
         for influence_sphere in model.influence_spheres:
-            for coords_pairs in influence_sphere.coordinates:
-                portrayal = self.influence_sphere_portrayal_method(influence_sphere)
-                portrayal["x"] = coords_pairs[0]
-                portrayal["y"] = coords_pairs[1]
-                print(portrayal)
-                grid_state[portrayal["Layer"]].append(portrayal)
+            grid_state["spheres"].append({ "x": influence_sphere.x,
+                                           "y": influence_sphere.y,
+                                           "radius": influence_sphere.radius,
+                                           "fillColor": "rgba(32,178,170, 0.2)",
+                                           "strokeColor": "#20b2aa" })
 
         return grid_state
