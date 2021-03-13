@@ -58,7 +58,8 @@ class CanvasGrid(VisualizationElement):
 
     """
 
-    package_includes = ["GridDraw.js", "CanvasModule.js", "InteractionHandler.js"]
+    package_includes = ["CanvasModule.js", "InteractionHandler.js"]
+    local_includes = ["BorderGridDraw.js"]
 
     def __init__(
         self,
