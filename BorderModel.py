@@ -6,8 +6,10 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 
 class BorderAgent(Agent):
-	def __init__(self, unique_id, model):
+	def __init__(self, unique_id, influence_sphere, model):
 		super().__init__(unique_id, model)
+		self.influence_sphere = influence_sphere
+		
 		self.sound = 1
 		self.sound_repository = []
 		self.adopt_modifier = 1
@@ -73,7 +75,7 @@ class BorderModel(Model):
 		for influence_sphere in self.influence_spheres:
 			# Create agents
 			for i in range(influence_sphere.population):
-				agent = BorderAgent(agent_no, self)
+				agent = BorderAgent(agent_no, influence_sphere, self)
 				# Add agent to the scheduler
 				self.schedule.add(agent)
 				
