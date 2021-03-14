@@ -56,7 +56,11 @@ class BorderAgent(Agent):
 		
 		# If not travelling, wander
 		if not self.travel_sphere:
-			new_position = self.wander(possible_steps)
+			# Every once in a while, an agent should attempt to return home
+			if self.model.random.random() <= self.model.home_chance:
+				new_position = self.home(possible_steps)
+			else:
+				new_position = self.wander(possible_steps)
 		# If travelling, check if we should wander
 		else:
 			# If we have not yet arrived at the destination sphere
@@ -83,9 +87,7 @@ class BorderAgent(Agent):
 				# Check if we ought to return home (when number is lower than the model threshold)
 				if self.model.random.random() <= self.model.return_chance:
 					# We just initiate a new travel, but this time with the home sphere as the target
-					self.travel_sphere = self.influence_sphere
-					self.travel_arrived = False
-					new_position = self.travel(possible_steps)
+					new_position = self.home(possible_steps)
 				else:
 					new_position = self.wander(possible_steps)
 
@@ -115,6 +117,12 @@ class BorderAgent(Agent):
 				new_position = possible_step
 
 		return new_position
+
+	def home(self, possible_steps):
+		# Return home
+		self.travel_sphere = self.influence_sphere
+		self.travel_arrived = False
+		return self.travel(possible_steps)
 	
 	def speak(self):
 		# For the neighbours we *do* want to be using the Moore specification, and also the center (there could be someone we share the space with)
@@ -133,6 +141,7 @@ class BorderModel(Model):
 		self.running = True
 		self.travel_chance = 0.005 # chance of an agent travelling to another sphere each step
 		self.return_chance = 0.05 # chance of an agent returning home each step after having arrived
+		self.home_chance = 0.005 # chance of an agent returning home each step after having arrived
 		
 		self.init_influence_spheres()
 		self.init_agents()
@@ -145,15 +154,15 @@ class BorderModel(Model):
 		spheres = [ { "x": 30,
 					  "y": 60,
 					  "radius": 10,
-					  "population": 1 },
+					  "population": 10 },
 					{ "x": 60,
 					  "y": 20,
 					  "radius": 15,
-					  "population": 1 },
+					  "population": 50 },
 					{ "x": 70,
 					  "y": 80,
 					  "radius": 7,
-					  "population": 1 } ]
+					  "population": 5 } ]
 
 		for sphere in spheres:
 			influence_sphere = InfluenceCircle(sphere["x"], sphere["y"], sphere["radius"],
