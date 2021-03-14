@@ -4,6 +4,27 @@ import math
 from mesa import Agent, Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
+from mesa.datacollection import DataCollector
+
+def compute_population(model, group):
+	count = 0
+	if group == "home":
+		for agent in model.schedule.agents:
+			if not agent.travel_sphere or agent.travel_sphere == agent.influence_sphere:
+				count += 1
+				continue
+	elif group == "travelling":
+		for agent in model.schedule.agents:
+			if agent.travel_sphere and agent.travel_sphere != agent.influence_sphere:
+				count += 1
+				continue
+	elif group == "visiting":
+		for agent in model.schedule.agents:
+			if agent.travel_sphere and agent.travel_arrived:
+				count += 1
+				continue
+
+	return count
 
 def distance_between_points(x0, x1, y0, y1):
 	return math.hypot(x0 - x1, 
@@ -169,6 +190,11 @@ class BorderModel(Model):
 											   sphere["population"])
 			self.influence_spheres.append(influence_sphere)
 
+		self.datacollector = DataCollector(
+			model_reporters={ "home": lambda model: compute_population(model, "home"),
+							  "travelling": lambda model: compute_population(model, "travelling"),
+							  "visiting": lambda model: compute_population(model, "visiting")})
+
 	def init_agents(self):
 		# Create agents based on population count in the influence spheres
 		agent_no = 0
@@ -186,6 +212,7 @@ class BorderModel(Model):
 				agent_no += 1
 
 	def step(self):
+		self.datacollector.collect(self)
 		self.schedule.step()
 
 # http://rosettacode.org/wiki/Bitmap/Midpoint_circle_algorithm#Python

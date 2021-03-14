@@ -1,5 +1,6 @@
 from BorderViz import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
+from mesa.visualization.modules import ChartModule
 from BorderModel import BorderModel
 
 def agent_portrayal(agent):
@@ -29,8 +30,15 @@ width = 100
 height = 100
 
 grid = CanvasGrid(agent_portrayal, influence_sphere_portrayal, width, height, 1000, 1000)
+chart = ChartModule([{"Label": "home",
+                      "Color": "red"},
+                      {"Label": "travelling",
+                      "Color": "green"},
+                      {"Label": "visiting",
+                      "Color": "orange"},],
+                    data_collector_name='datacollector')
 server = ModularServer(BorderModel,
-                       [grid],
+                       [grid, chart],
                        "Border Model",
                        {"num_agents":100, "width": width, "height": height})
 server.port = 8521 # The default
