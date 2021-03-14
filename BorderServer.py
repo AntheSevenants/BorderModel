@@ -1,4 +1,4 @@
-from BorderViz import CanvasGrid
+from BorderCanvasGrid import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
 from mesa.visualization.modules import ChartModule
 from BorderModel import BorderModel
