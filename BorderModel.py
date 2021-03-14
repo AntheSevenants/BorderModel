@@ -47,28 +47,50 @@ class BorderAgent(Agent):
 		# TODO: use Moore or not? (Moore = diagonal -- currently using Von Neumann)
 		possible_steps = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=True)
 		
+		# If not travelling, wander
 		if not self.travel_sphere:
-			legal_steps = []
-			for possible_step in possible_steps:
-				distance_from_center = distance_between_points(possible_step[0], self.influence_sphere.x, 
-											  	  			   possible_step[1], self.influence_sphere.y)
-				
-				if distance_from_center <= self.influence_sphere.radius:
-					legal_steps.append(possible_step)
-
-			new_position = self.random.choice(legal_steps)
+			new_position = self.wander(possible_steps)
+		# If travelling, check if we should wander
 		else:
-			current_lowest_distance = float('inf')
-			new_position = False
-			for possible_step in possible_steps:
-				distance_from_travel_center = distance_from_center = distance_between_points(possible_step[0], self.travel_sphere.x, 
-											  	  			   								 possible_step[1], self.travel_sphere.y) 
-				if distance_from_travel_center < current_lowest_distance:
-					current_lowest_distance = distance_from_travel_center
-					new_position = possible_step
+			distance_from_travel_center = distance_between_points(self.pos[0], self.travel_sphere.x, 
+											  	  			   	  self.pos[1], self.travel_sphere.y) 
+
+			# If we are within half the radius of the travel sphere, then...
+			if distance_from_travel_center <= self.travel_sphere.radius / 2:
+				# 1. lose the travel status
+				self.travel_sphere = False
+				# 2. start wandering
+				new_position = self.wander(possible_steps)
+			# Else, keep travelling
+			else:
+				new_position = self.travel(possible_steps)
 
 		self.model.grid.move_agent(self, new_position)		
 
+	def wander(self, possible_steps):
+		return self.random.choice(possible_steps)
+
+		# temporarily disable this section
+		legal_steps = []
+		for possible_step in possible_steps:
+			distance_from_center = distance_between_points(possible_step[0], self.influence_sphere.x, 
+										  	  			   possible_step[1], self.influence_sphere.y)
+			
+			if distance_from_center <= self.influence_sphere.radius:
+				legal_steps.append(possible_step)
+
+	def travel(self, possible_steps):
+		current_lowest_distance = float('inf')
+		
+		new_position = False
+		for possible_step in possible_steps:
+			distance_from_travel_center = distance_between_points(possible_step[0], self.travel_sphere.x, 
+										  	  			   								 possible_step[1], self.travel_sphere.y) 
+			if distance_from_travel_center < current_lowest_distance:
+				current_lowest_distance = distance_from_travel_center
+				new_position = possible_step
+
+		return new_position
 	
 	def speak(self):
 		# For the neighbours we *do* want to be using the Moore specification, and also the center (there could be someone we share the space with)
