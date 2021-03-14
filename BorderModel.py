@@ -5,6 +5,10 @@ from mesa import Agent, Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 
+def distance_between_points(x0, x1, y0, y1):
+	return math.hypot(x0 - x1, 
+					  y0 - y1)
+
 class BorderAgent(Agent):
 	def __init__(self, unique_id, influence_sphere, model):
 		super().__init__(unique_id, model)
@@ -17,24 +21,54 @@ class BorderAgent(Agent):
 		self.travel_urge = 1
 		self.ethnocentrism = 1
 		self.media_receptiveness = 1
+
+		# Is the agent travelling?
+		self.travel_sphere = False
 				
 	def step(self):
+		self.travel_chance_time()
 		self.move() # TODO: repeat this a number of times probably -- refer to Stanford & Kenny (p. 127)
 		self.speak()
 		
+	def travel_chance_time(self):
+		# Don't initiate a new travel target if already travelling
+		if self.travel_sphere:
+			return
+
+		# Check if travel chance time happens (when number is lower than the model threshold)
+		if self.model.random.random() <= self.model.travel_chance:
+			# Travel chance time is happening
+			# TODO: better decision making on which sphere to travel to
+			# Current implementation = random influence sphere
+			travel_sphere = self.random.choice(self.model.influence_spheres)
+			self.travel_sphere = travel_sphere # set current travel target to target travel sphere
+
 	def move(self):
 		# TODO: use Moore or not? (Moore = diagonal -- currently using Von Neumann)
 		possible_steps = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=True)
-		legal_steps = []
-		for possible_step in possible_steps:
-			distance_from_center = math.hypot(possible_step[0] - self.influence_sphere.x, 
-										  	  possible_step[1] - self.influence_sphere.y)
-			
-			if distance_from_center <= self.influence_sphere.radius:
-				legal_steps.append(possible_step)
+		
+		if not self.travel_sphere:
+			legal_steps = []
+			for possible_step in possible_steps:
+				distance_from_center = distance_between_points(possible_step[0], self.influence_sphere.x, 
+											  	  			   possible_step[1], self.influence_sphere.y)
+				
+				if distance_from_center <= self.influence_sphere.radius:
+					legal_steps.append(possible_step)
 
-		new_position = self.random.choice(legal_steps)
-		self.model.grid.move_agent(self, new_position)
+			new_position = self.random.choice(legal_steps)
+		else:
+			current_lowest_distance = float('inf')
+			new_position = False
+			for possible_step in possible_steps:
+				distance_from_travel_center = distance_from_center = distance_between_points(possible_step[0], self.travel_sphere.x, 
+											  	  			   								 possible_step[1], self.travel_sphere.y) 
+				if distance_from_travel_center < current_lowest_distance:
+					current_lowest_distance = distance_from_travel_center
+					new_position = possible_step
+
+		self.model.grid.move_agent(self, new_position)		
+
 	
 	def speak(self):
 		# For the neighbours we *do* want to be using the Moore specification, and also the center (there could be someone we share the space with)
@@ -51,6 +85,7 @@ class BorderModel(Model):
 		self.grid = MultiGrid(width, height, False)
 		self.schedule = RandomActivation(self)
 		self.running = True
+		self.travel_chance = 0.05
 		
 		self.init_influence_spheres()
 		self.init_agents()
@@ -60,11 +95,11 @@ class BorderModel(Model):
 		self.influence_spheres = []
 
 		# Create influence spheres
-		spheres = [ { "x": 50,
-					  "y": 50,
+		spheres = [ { "x": 30,
+					  "y": 60,
 					  "radius": 10,
 					  "population": 10 },
-					{ "x": 20,
+					{ "x": 60,
 					  "y": 20,
 					  "radius": 15,
 					  "population": 50 },
