@@ -4,7 +4,7 @@ from BorderModel import BorderModel
 
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
-                 "Color": "red",
+                 "Color": "red" if not agent.travel_sphere else "green",
                  "Filled": "true",
                  "Layer": 1,
                  "r": 0.5}
