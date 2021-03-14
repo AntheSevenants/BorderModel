@@ -4,10 +4,16 @@ from BorderModel import BorderModel
 
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
-                 "Color": "red" if not agent.travel_sphere else "green",
+                 "Color": "red",
                  "Filled": "true",
                  "Layer": 1,
                  "r": 0.5}
+
+    if agent.travel_sphere:
+        portrayal["Color"] = "green"
+        if agent.travel_arrived:
+            portrayal["Color"] = "orange"
+
     return portrayal
 
 def influence_sphere_portrayal(influence_sphere):
