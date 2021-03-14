@@ -24,6 +24,7 @@ class BorderAgent(Agent):
 
 		# Is the agent travelling?
 		self.travel_sphere = False
+		self.travel_arrived = False
 				
 	def step(self):
 		self.travel_chance_time()
@@ -40,8 +41,14 @@ class BorderAgent(Agent):
 			# Travel chance time is happening
 			# TODO: better decision making on which sphere to travel to
 			# Current implementation = random influence sphere
-			travel_sphere = self.random.choice(self.model.influence_spheres)
-			self.travel_sphere = travel_sphere # set current travel target to target travel sphere
+			while True:
+				travel_sphere = self.random.choice(self.model.influence_spheres)
+				# Keep picking a travel sphere until we've found one that isn't our home sphere
+				# I don't know whether this is more efficient than removing the home sphere from 
+				# a deepcopy of the list of all spheres but I assume this is better
+				if travel_sphere != self.influence_sphere:
+					self.travel_sphere = travel_sphere # set current travel target to target travel sphere
+					break
 
 	def move(self):
 		# TODO: use Moore or not? (Moore = diagonal -- currently using Von Neumann)
@@ -52,18 +59,35 @@ class BorderAgent(Agent):
 			new_position = self.wander(possible_steps)
 		# If travelling, check if we should wander
 		else:
-			distance_from_travel_center = distance_between_points(self.pos[0], self.travel_sphere.x, 
-											  	  			   	  self.pos[1], self.travel_sphere.y) 
+			# If we have not yet arrived at the destination sphere
+			if not self.travel_arrived:
+				distance_from_travel_center = distance_between_points(self.pos[0], self.travel_sphere.x, 
+												  	  			   	  self.pos[1], self.travel_sphere.y) 
 
-			# If we are within half the radius of the travel sphere, then...
-			if distance_from_travel_center <= self.travel_sphere.radius / 2:
-				# 1. lose the travel status
-				self.travel_sphere = False
-				# 2. start wandering
-				new_position = self.wander(possible_steps)
-			# Else, keep travelling
+				# If we are within half the radius of the travel sphere, then...
+				if distance_from_travel_center <= self.travel_sphere.radius / 2:
+					# 1. set travel status to arrived
+					self.travel_arrived = True
+
+					# If we have returned home, reset everything
+					if self.travel_sphere == self.influence_sphere:
+						self.travel_sphere = False
+						self.travel_arrived = False
+
+					# 2. start wandering
+					new_position = self.wander(possible_steps)
+				# Else, keep travelling
+				else:
+					new_position = self.travel(possible_steps)
 			else:
-				new_position = self.travel(possible_steps)
+				# Check if we ought to return home (when number is lower than the model threshold)
+				if self.model.random.random() <= self.model.return_chance:
+					# We just initiate a new travel, but this time with the home sphere as the target
+					self.travel_sphere = self.influence_sphere
+					self.travel_arrived = False
+					new_position = self.travel(possible_steps)
+				else:
+					new_position = self.wander(possible_steps)
 
 		self.model.grid.move_agent(self, new_position)		
 
@@ -107,7 +131,8 @@ class BorderModel(Model):
 		self.grid = MultiGrid(width, height, False)
 		self.schedule = RandomActivation(self)
 		self.running = True
-		self.travel_chance = 0.05
+		self.travel_chance = 0.005 # chance of an agent travelling to another sphere each step
+		self.return_chance = 0.05 # chance of an agent returning home each step after having arrived
 		
 		self.init_influence_spheres()
 		self.init_agents()
@@ -120,15 +145,15 @@ class BorderModel(Model):
 		spheres = [ { "x": 30,
 					  "y": 60,
 					  "radius": 10,
-					  "population": 10 },
+					  "population": 1 },
 					{ "x": 60,
 					  "y": 20,
 					  "radius": 15,
-					  "population": 50 },
+					  "population": 1 },
 					{ "x": 70,
 					  "y": 80,
 					  "radius": 7,
-					  "population": 5 } ]
+					  "population": 1 } ]
 
 		for sphere in spheres:
 			influence_sphere = InfluenceCircle(sphere["x"], sphere["y"], sphere["radius"],
