@@ -1,5 +1,6 @@
 # Local imports
 import math
+import statistics
 
 from mesa import Agent, Model
 from mesa.time import RandomActivation
@@ -33,6 +34,15 @@ def compute_population(model, group):
 				continue
 
 	return count
+
+# Get the sound mean for a population / influence sphere
+def compute_sound_means(model, influence_sphere_name):
+	population_sound_repository = []
+	for agent in model.schedule.agents:
+		if agent.influence_sphere.name == influence_sphere_name:
+			population_sound_repository += agent.sound_repository
+
+	return statistics.mean(population_sound_repository)
 
 def distance_between_points(x0, x1, y0, y1):
 	return math.hypot(x0 - x1, 
@@ -258,6 +268,10 @@ class BorderModel(Model):
 		model_reporters = { "home": lambda model: compute_population(model, "home"),
 							"travelling": lambda model: compute_population(model, "travelling"),
 							"visiting": lambda model: compute_population(model, "visiting") }
+
+		for influence_sphere in self.influence_spheres:
+			model_reporters["sphere_" + influence_sphere.name] = \
+				lambda model: compute_sound_means(model, influence_sphere.name)
 
 		self.datacollector = DataCollector(
 			model_reporters=model_reporters)
