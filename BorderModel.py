@@ -45,6 +45,9 @@ def compute_sound_means(model, influence_sphere_name):
 
 	return statistics.mean(population_sound_repository)
 
+def build_sound_mean_lambda(influence_sphere_name):
+	return lambda model: compute_sound_means(model, influence_sphere_name)
+
 def distance_between_points(x0, x1, y0, y1):
 	return math.hypot(x0 - x1, 
 					  y0 - y1)
@@ -256,7 +259,7 @@ class BorderModel(Model):
 
 		for influence_sphere in self.influence_spheres:
 			model_reporters["sphere_" + influence_sphere.name] = \
-				lambda model: compute_sound_means(model, influence_sphere.name)
+				build_sound_mean_lambda(influence_sphere.name)
 
 		self.datacollector = DataCollector(
 			model_reporters=model_reporters)
