@@ -1,0 +1,26 @@
+[
+	{
+		"x": 30,
+		"y": 60,
+		"radius": 10,
+		"population": 10,
+		"sound_mean": 0,
+		"name": "Tildebourg"
+	},
+	{
+		"x": 60,
+		"y": 20,
+		"radius": 15,
+		"population": 50,
+		"sound_mean": 0.5,
+		"name": "Amsteryam"
+	},
+	{
+		"x": 70,
+		"y": 80,
+		"radius": 7,
+		"population": 5,
+		"sound_mean": 0,
+		"name": "Dogsand"
+	}
+]

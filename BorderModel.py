@@ -1,6 +1,7 @@
 # Local imports
 import math
 import statistics
+import json
 
 from mesa import Agent, Model
 from mesa.time import RandomActivation
@@ -222,24 +223,8 @@ class BorderModel(Model):
 		self.influence_spheres = []
 
 		# Create influence spheres
-		spheres = [ { "x": 30,
-					  "y": 60,
-					  "radius": 10,
-					  "population": 10,
-					  "sound_mean": 0,
-					  "name": "Tildebourg" },
-					{ "x": 60,
-					  "y": 20,
-					  "radius": 15,
-					  "population": 50,
-					  "sound_mean": 0.5,
-					  "name": "Amsteryam" },
-					{ "x": 70,
-					  "y": 80,
-					  "radius": 7,
-					  "population": 5,
-					  "sound_mean": 0,
-					  "name": "Dogsand" } ]
+		with open("spheres.json") as spheres_file:
+			spheres = json.load(spheres_file)
 
 		# Create the influence spheres based on the info in the dict above
 		for sphere in spheres:
