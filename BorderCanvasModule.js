@@ -5,7 +5,8 @@ var CanvasModule = function(canvas_width, canvas_height, grid_width, grid_height
 	// Create the tag with absolute positioning :
 	var canvas_tag = `<canvas width="${canvas_width}" height="${canvas_height}" class="world-grid"/>`
 
-	var parent_div_tag = '<div style="height:' + canvas_height + 'px;" class="world-grid-parent"></div>'
+	var parent_div_tag = '<div style="height:' + canvas_height + 'px; width:' + canvas_width + 'px; \
+									  display: inline-block;" class="world-grid-parent"></div>'
 
 	// Append it to body:
 	var canvas = $(canvas_tag)[0];
