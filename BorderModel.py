@@ -186,7 +186,7 @@ class BorderModel(Model):
 					  "population": 5 } ]
 
 		for sphere in spheres:
-			influence_sphere = InfluenceCircle(sphere["x"], sphere["y"], sphere["radius"],
+			influence_sphere = InfluenceSphere(sphere["x"], sphere["y"], sphere["radius"],
 											   sphere["population"])
 			self.influence_spheres.append(influence_sphere)
 
@@ -216,7 +216,7 @@ class BorderModel(Model):
 		self.schedule.step()
 
 # http://rosettacode.org/wiki/Bitmap/Midpoint_circle_algorithm#Python
-class InfluenceCircle():
+class InfluenceSphere():
 	def __init__(self, x0, y0, radius, population):
 		self.x = x0
 		self.y = y0
