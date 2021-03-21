@@ -39,7 +39,7 @@ def distance_between_points(x0, x1, y0, y1):
 					  y0 - y1)
 
 class BorderAgent(Agent):
-	def __init__(self, unique_id, influence_sphere, model):
+	def __init__(self, unique_id, influence_sphere, sound_mean, model):
 		super().__init__(unique_id, model)
 		self.influence_sphere = influence_sphere
 		self.model = model
@@ -54,7 +54,22 @@ class BorderAgent(Agent):
 		# Is the agent travelling?
 		self.travel_sphere = False # Target sphere when travelling
 		self.travel_arrived = False # Has the agent arrived at travel destination?
-				
+	
+		self.init_sound(sound_mean)
+
+	def init_sound(self, sound_mean):
+		# Generate the initial sound which will be the only sound in the sound repository
+		borders = { "left": sound_mean - self.model.sound_mean_interval,
+					"right": sound_mean + self.model.sound_mean_interval }
+
+		if borders["left"] < 0:
+			borders["left"] = 0
+		if borders["right"] > 1:
+			borders["right"] = 1
+
+		initial_sound = self.model.random.uniform(borders["left"], borders["right"])
+		self.sound_repository.append(initial_sound)
+
 	def step(self):
 		self.travel_chance_time()
 		self.move() # TODO: repeat this a number of times probably -- refer to Stanford & Kenny (p. 127)
@@ -187,7 +202,8 @@ class BorderModel(Model):
 		self.travel_chance = 0.005 # chance of an agent travelling to another sphere each step
 		self.return_chance = 0.05 # chance of an agent returning home each step after having arrived
 		self.home_chance = 0.005 # chance of an agent returning home each step after having arrived
-		
+		self.sound_mean_interval = 0.1 # distance of one side of sound interval around sound mean
+
 		self.init_influence_spheres()
 		self.init_agents()
 		#print(self.influence_spheres[0].coordinates)
@@ -199,20 +215,23 @@ class BorderModel(Model):
 		spheres = [ { "x": 30,
 					  "y": 60,
 					  "radius": 10,
-					  "population": 10 },
+					  "population": 10,
+					  "sound_mean": 0 },
 					{ "x": 60,
 					  "y": 20,
 					  "radius": 15,
-					  "population": 50 },
+					  "population": 50,
+					  "sound_mean": 0.5 },
 					{ "x": 70,
 					  "y": 80,
 					  "radius": 7,
-					  "population": 5 } ]
+					  "population": 5,
+					  "sound_mean": 0 } ]
 
 		# Create the influence spheres based on the info in the dict above
 		for sphere in spheres:
 			influence_sphere = InfluenceSphere(sphere["x"], sphere["y"], sphere["radius"],
-											   sphere["population"])
+											   sphere["population"], sphere["sound_mean"])
 			self.influence_spheres.append(influence_sphere)
 
 		# Initialise the data collector which will be used for graphing and stats
@@ -227,7 +246,8 @@ class BorderModel(Model):
 		for influence_sphere in self.influence_spheres:
 			# Create agents
 			for i in range(influence_sphere.population):
-				agent = BorderAgent(agent_no, influence_sphere, self)
+				agent = BorderAgent(agent_no, influence_sphere,
+									influence_sphere.sound_mean, self)
 				# Add agent to the scheduler
 				self.schedule.add(agent)
 				
@@ -243,11 +263,12 @@ class BorderModel(Model):
 
 class InfluenceSphere():
 	# This code generates a list of all coordinates which will be inside the influence sphere
-	def __init__(self, x0, y0, radius, population):
+	def __init__(self, x0, y0, radius, population, sound_mean):
 		self.x = x0
 		self.y = y0
 		self.radius = radius
 		self.population = population
+		self.sound_mean = sound_mean # the mean around which population values are initialised
 
 		self.coordinates = []
 
