@@ -6,20 +6,28 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 
+# Data collection function
+# This is really slow, but I can't think of an alternative
+# ...and it works, so...
 def compute_population(model, group):
 	count = 0
 	if group == "home":
 		for agent in model.schedule.agents:
+			# If the agent is not travelling, or they are travelling homewards, count them
+			# as being "home"
 			if not agent.travel_sphere or agent.travel_sphere == agent.influence_sphere:
 				count += 1
 				continue
 	elif group == "travelling":
 		for agent in model.schedule.agents:
+			# If the agent is travelling and the travel target is not the home sphere,
+			# count the agent as "travelling"
 			if agent.travel_sphere and agent.travel_sphere != agent.influence_sphere:
 				count += 1
 				continue
 	elif group == "visiting":
 		for agent in model.schedule.agents:
+			# If the agent is travelling and has arrived, coutn the agent as "visiting"
 			if agent.travel_sphere and agent.travel_arrived:
 				count += 1
 				continue
@@ -37,21 +45,22 @@ class BorderAgent(Agent):
 		self.model = model
 
 		self.sound = 1
-		self.sound_repository = []
-		self.adopt_modifier = 1
-		self.travel_urge = 1
-		self.ethnocentrism = 1
-		self.media_receptiveness = 1
+		self.sound_repository = [] # Previously heard sounds
+		self.adopt_modifier = 1 # How quickly does this agent want to adapt?
+		self.travel_urge = 1 # How much does this agent want to travel?
+		self.ethnocentrism = 1 # How nationalistic is this agent?
+		self.media_receptiveness = 1 # How receptive is this agent to media influences?
 
 		# Is the agent travelling?
-		self.travel_sphere = False
-		self.travel_arrived = False
+		self.travel_sphere = False # Target sphere when travelling
+		self.travel_arrived = False # Has the agent arrived at travel destination?
 				
 	def step(self):
 		self.travel_chance_time()
 		self.move() # TODO: repeat this a number of times probably -- refer to Stanford & Kenny (p. 127)
 		self.speak()
-		
+	
+	# Attempt to travel
 	def travel_chance_time(self):
 		# Don't initiate a new travel target if already travelling
 		if self.travel_sphere:
@@ -71,6 +80,7 @@ class BorderAgent(Agent):
 					self.travel_sphere = travel_sphere # set current travel target to target travel sphere
 					break
 
+	# All movement related code 
 	def move(self):
 		# TODO: use Moore or not? (Moore = diagonal -- currently using Von Neumann)
 		possible_steps = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=True)
@@ -114,10 +124,13 @@ class BorderAgent(Agent):
 
 		self.model.grid.move_agent(self, new_position)		
 
+	# Code for strolling around casually
 	def wander(self, possible_steps):
 		return self.random.choice(possible_steps)
 
-		# temporarily disable this section
+		# This code can be used to prevent agents from leaving their influence sphere
+		# It is disabled through the return statement above, because it is no longer needed
+		# However, it could be interesting to use for other experiments, so I'm leaving it in
 		legal_steps = []
 		for possible_step in possible_steps:
 			distance_from_center = distance_between_points(possible_step[0], self.influence_sphere.x, 
@@ -126,25 +139,36 @@ class BorderAgent(Agent):
 			if distance_from_center <= self.influence_sphere.radius:
 				legal_steps.append(possible_step)
 
+	# Code for travelling to another sphere (or travelling home)
 	def travel(self, possible_steps):
+		# This is a bit of a hack, but I'm keeping track of the step with the lowest distance
+		# to the target. To make sure the first step distance will be used as a reference,
+		# I set the default lowest distance to infinity, so any step will always be lower
 		current_lowest_distance = float('inf')
 		
 		new_position = False
+		# Check the distance for every possible step
 		for possible_step in possible_steps:
+			# Find the distance to the centre of the travel sphere from the possible next step
 			distance_from_travel_center = distance_between_points(possible_step[0], self.travel_sphere.x, 
 										  	  			   								 possible_step[1], self.travel_sphere.y) 
+			
+			# If the distance found is shorter than the current lowest distance, prefer this possible
+			# step to the one already stored, and update the current lowest distance
 			if distance_from_travel_center < current_lowest_distance:
 				current_lowest_distance = distance_from_travel_center
 				new_position = possible_step
 
 		return new_position
 
+	# Code for returning home
 	def home(self, possible_steps):
-		# Return home
+		# Set the travel sphere to the home sphere
 		self.travel_sphere = self.influence_sphere
 		self.travel_arrived = False
 		return self.travel(possible_steps)
 	
+	# Speaking-related code
 	def speak(self):
 		# For the neighbours we *do* want to be using the Moore specification, and also the center (there could be someone we share the space with)
 		neighbourhood = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
@@ -185,11 +209,13 @@ class BorderModel(Model):
 					  "radius": 7,
 					  "population": 5 } ]
 
+		# Create the influence spheres based on the info in the dict above
 		for sphere in spheres:
 			influence_sphere = InfluenceSphere(sphere["x"], sphere["y"], sphere["radius"],
 											   sphere["population"])
 			self.influence_spheres.append(influence_sphere)
 
+		# Initialise the data collector which will be used for graphing and stats
 		self.datacollector = DataCollector(
 			model_reporters={ "home": lambda model: compute_population(model, "home"),
 							  "travelling": lambda model: compute_population(model, "travelling"),
@@ -215,8 +241,8 @@ class BorderModel(Model):
 		self.datacollector.collect(self)
 		self.schedule.step()
 
-# http://rosettacode.org/wiki/Bitmap/Midpoint_circle_algorithm#Python
 class InfluenceSphere():
+	# This code generates a list of all coordinates which will be inside the influence sphere
 	def __init__(self, x0, y0, radius, population):
 		self.x = x0
 		self.y = y0
