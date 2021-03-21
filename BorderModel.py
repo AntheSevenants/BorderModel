@@ -81,7 +81,7 @@ class BorderAgent(Agent):
 		if borders["right"] > 1:
 			borders["right"] = 1
 
-		initial_sound = round(self.model.random.uniform(borders["left"], borders["right"]))
+		initial_sound = round(self.model.random.uniform(borders["left"], borders["right"]), 2)
 		self.sound_repository.append(initial_sound)
 
 	def step(self):
