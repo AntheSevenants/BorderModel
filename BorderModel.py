@@ -64,6 +64,7 @@ class BorderAgent(Agent):
 		self.travel_urge = 1 # How much does this agent want to travel?
 		self.ethnocentrism = 1 # How nationalistic is this agent?
 		self.media_receptiveness = 1 # How receptive is this agent to media influences?
+		self.has_spoken = False # Has this agent spoken yet this step?
 
 		# Is the agent travelling?
 		self.travel_sphere = False # Target sphere when travelling
@@ -199,13 +200,33 @@ class BorderAgent(Agent):
 	
 	# Speaking-related code
 	def speak(self):
+		# If this agent has already appeared in another agent's speaking turn, continue
+		if self.has_spoken:
+			return
+
 		# For the neighbours we *do* want to be using the Moore specification, and also the center (there could be someone we share the space with)
 		neighbourhood = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
 		neighbours = self.model.grid.get_cell_list_contents(neighbourhood)
 		if len(neighbours) > 1:
-			for neighbour in neighbours:
-				# TODO: speak!
-				pass
+			# Select one neighbour
+			neighbour = self.model.random.choice(neighbours)
+
+			# If the neighbour has already had a speaking turn, skip
+			if neighbour.has_spoken:
+				return # TODO: it is possible that the neighbour has spoken to another agent
+			
+			# This agent speaks, and the neighbour agent speaks
+			# They each save each other's 'uttered' sound
+			spoken_sound = self.model.random.choice(self.sound_repository)
+			received_sound = self.model.random.choice(neighbour.sound_repository)
+
+			# Add spoken sound to neighbour's sound repository
+			neighbour.sound_repository.append(spoken_sound)
+			self.sound_repository.append(received_sound)
+
+			# Set this and the neighbour agent's spoken state to True
+			self.has_spoken = True
+			neighbour.has_spoken = True
 
 class BorderModel(Model):
 	def __init__(self, num_agents, width, height):
@@ -267,6 +288,10 @@ class BorderModel(Model):
 	def step(self):
 		self.datacollector.collect(self)
 		self.schedule.step()
+
+		for agent in self.schedule.agents:
+			# Reset speaking turns for every agent
+			agent.has_spoken = False
 
 class InfluenceSphere():
 	# This code generates a list of all coordinates which will be inside the influence sphere
