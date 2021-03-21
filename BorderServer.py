@@ -1,6 +1,6 @@
 from BorderCanvasGrid import CanvasGrid
+from BorderChartVisualization import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
-from mesa.visualization.modules import ChartModule
 from BorderModel import BorderModel
 
 def agent_portrayal(agent):
