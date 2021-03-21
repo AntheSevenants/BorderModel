@@ -27,7 +27,7 @@ def compute_population(model, group):
 				continue
 	elif group == "visiting":
 		for agent in model.schedule.agents:
-			# If the agent is travelling and has arrived, coutn the agent as "visiting"
+			# If the agent is travelling and has arrived, count the agent as "visiting"
 			if agent.travel_sphere and agent.travel_arrived:
 				count += 1
 				continue
