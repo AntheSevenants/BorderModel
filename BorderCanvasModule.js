@@ -31,6 +31,7 @@ var CanvasModule = function(canvas_width, canvas_height, grid_width, grid_height
 		for (var layer in data["cells"])
 			canvasDraw.drawLayer(data["cells"][layer]);
 		canvasDraw.drawGridLines("#eee");
+		canvasDraw.drawSphereNames(data["spheres"]);
 	};
 
 	this.reset = function() {

@@ -122,6 +122,8 @@ class CanvasGrid(VisualizationElement):
                                            "y": influence_sphere.y,
                                            "radius": influence_sphere.radius,
                                            "fillColor": "rgba(32,178,170, 0.2)",
-                                           "strokeColor": "#20b2aa" })
+                                           "strokeColor": "#20b2aa",
+                                           "textColor": "#198e88",
+                                           "name": influence_sphere.name })
 
         return grid_state

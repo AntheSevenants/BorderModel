@@ -97,6 +97,15 @@ var GridVisualization = function(width, height, gridWidth, gridHeight, context, 
                 }
         };
 
+        // Draw influence sphere names
+        this.drawSphereNames = function(influenceSpheres) {
+                for (var i in influenceSpheres) {
+                        var sphere = influenceSpheres[i];
+                       
+                        this.drawCenteredText(sphere.name, sphere.x, sphere.y, "15px Arial", sphere.textColor)
+                }
+        };
+
         // DRAWING METHODS
         // =====================================================================
 
@@ -356,6 +365,22 @@ var GridVisualization = function(width, height, gridWidth, gridHeight, context, 
                 context.strokeStyle = stroke_color;
                 context.stroke();
         };
+
+        /**
+        Draw centered text
+        */
+
+        this.drawCenteredText = function (text, x, y, font, stroke_color)
+        {   
+            var cx = (x + 0.5) * cellWidth;
+            var cy = (y + 0.5) * cellHeight;
+            
+            context.fillStyle = stroke_color;
+            context.font = font;
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+            context.fillText(text, cx, cy);
+        }
 
         this.resetCanvas = function() {
                 context.clearRect(0, 0, width, height);
