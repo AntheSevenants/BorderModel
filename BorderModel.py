@@ -216,22 +216,24 @@ class BorderModel(Model):
 					  "y": 60,
 					  "radius": 10,
 					  "population": 10,
-					  "sound_mean": 0 },
+					  "sound_mean": 0,
+					  "name": "Tildebourg" },
 					{ "x": 60,
 					  "y": 20,
 					  "radius": 15,
 					  "population": 50,
-					  "sound_mean": 0.5 },
+					  "sound_mean": 0.5,
+					  "name": "Amsteryam" },
 					{ "x": 70,
 					  "y": 80,
 					  "radius": 7,
 					  "population": 5,
-					  "sound_mean": 0 } ]
+					  "sound_mean": 0,
+					  "name": "Dogsand" } ]
 
 		# Create the influence spheres based on the info in the dict above
 		for sphere in spheres:
-			influence_sphere = InfluenceSphere(sphere["x"], sphere["y"], sphere["radius"],
-											   sphere["population"], sphere["sound_mean"])
+			influence_sphere = InfluenceSphere(**sphere)
 			self.influence_spheres.append(influence_sphere)
 
 	def init_agents(self):
@@ -266,18 +268,20 @@ class BorderModel(Model):
 
 class InfluenceSphere():
 	# This code generates a list of all coordinates which will be inside the influence sphere
-	def __init__(self, x0, y0, radius, population, sound_mean):
-		self.x = x0
-		self.y = y0
+	def __init__(self, x, y, radius, population, sound_mean, name):
+		self.name = name
+
+		self.x = x
+		self.y = y
 		self.radius = radius
 		self.population = population
 		self.sound_mean = sound_mean # the mean around which population values are initialised
 
 		self.coordinates = []
 
-		for j in range(x0 - radius, x0 + radius + 1):
-			for k in range(y0 - radius, y0 + radius + 1):
-				if self.distance({ "x": j, "y": k }, { "x": x0, "y": y0 }) <= radius:
+		for j in range(x - radius, x + radius + 1):
+			for k in range(y - radius, y + radius + 1):
+				if self.distance({ "x": j, "y": k }, { "x": x, "y": y }) <= radius:
 					self.coordinates.append([ j, k ])
 
 	def distance(self, p1, p2):
