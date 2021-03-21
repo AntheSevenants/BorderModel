@@ -22,7 +22,7 @@ def compute_population(model, group):
 		for agent in model.schedule.agents:
 			# If the agent is travelling and the travel target is not the home sphere,
 			# count the agent as "travelling"
-			if agent.travel_sphere and agent.travel_sphere != agent.influence_sphere:
+			if agent.travel_sphere and agent.travel_sphere != agent.influence_sphere and not agent.travel_arrived:
 				count += 1
 				continue
 	elif group == "visiting":
