@@ -1,3 +1,5 @@
+import json
+
 from BorderCanvasGrid import CanvasGrid
 from BorderChartVisualization import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
@@ -37,8 +39,21 @@ chart = ChartModule([{"Label": "home",
                       {"Label": "visiting",
                       "Color": "orange"},],
                     data_collector_name='datacollector')
+
+colours = [ "red", "green", "orange", "blue", "purple", "teal", "yellow" ]
+sound_mean_data_groups = []
+with open("spheres.json") as spheres_file:
+  spheres = json.load(spheres_file)
+
+  i = 0
+  for sphere in spheres:
+    sound_mean_data_groups.append({"Label": "sphere_" + sphere["name"], "Color": colours[i]})
+    i += 1
+
+sound_chart = ChartModule(sound_mean_data_groups, data_collector_name='datacollector')
+
 server = ModularServer(BorderModel,
-                       [grid, chart],
+                       [grid, chart, sound_chart],
                        "Border Model",
                        {"num_agents":100, "width": width, "height": height})
 server.port = 8521 # The default
