@@ -43,7 +43,7 @@ def compute_sound_means(model, influence_sphere_name):
 		if agent.influence_sphere.name == influence_sphere_name:
 			population_sound_repository += agent.sound_repository
 
-	return statistics.mean(population_sound_repository)
+	return round(statistics.mean(population_sound_repository), 2)
 
 def build_sound_mean_lambda(influence_sphere_name):
 	return lambda model: compute_sound_means(model, influence_sphere_name)
