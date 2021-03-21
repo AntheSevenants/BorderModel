@@ -52,8 +52,11 @@ with open("spheres.json") as spheres_file:
 
 sound_chart = ChartModule(sound_mean_data_groups, data_collector_name='datacollector')
 
+sound_repo_size_chart = ChartModule([{"Label": "sound_repo_size", "Color": "black"}],
+                                    data_collector_name='datacollector')
+
 server = ModularServer(BorderModel,
-                       [grid, chart, sound_chart],
+                       [grid, chart, sound_chart, sound_repo_size_chart],
                        "Border Model",
                        {"num_agents":100, "width": width, "height": height})
 server.port = 8521 # The default

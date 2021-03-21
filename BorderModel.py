@@ -48,6 +48,13 @@ def compute_sound_means(model, influence_sphere_name):
 def build_sound_mean_lambda(influence_sphere_name):
 	return lambda model: compute_sound_means(model, influence_sphere_name)
 
+def compute_average_sound_repository_size(model):
+	population_sound_repository_lengths = []
+	for agent in model.schedule.agents:
+		population_sound_repository_lengths.append(len(agent.sound_repository))
+
+	return round(statistics.mean(population_sound_repository_lengths))
+
 def distance_between_points(x0, x1, y0, y1):
 	return math.hypot(x0 - x1, 
 					  y0 - y1)
@@ -277,7 +284,8 @@ class BorderModel(Model):
 		# Initialise the data collector which will be used for graphing and stats
 		model_reporters = { "home": lambda model: compute_population(model, "home"),
 							"travelling": lambda model: compute_population(model, "travelling"),
-							"visiting": lambda model: compute_population(model, "visiting") }
+							"visiting": lambda model: compute_population(model, "visiting"),
+							"sound_repo_size": compute_average_sound_repository_size }
 
 		for influence_sphere in self.influence_spheres:
 			model_reporters["sphere_" + influence_sphere.name] = \
