@@ -238,6 +238,7 @@ class BorderModel(Model):
 		self.return_chance = 0.05 # chance of an agent returning home each step after having arrived
 		self.home_chance = 0.005 # chance of an agent returning home each step after having arrived
 		self.sound_mean_interval = 0.1 # distance of one side of sound interval around sound mean
+		self.decay_limit = 140 # amount of sounds an agent can remember
 
 		self.init_influence_spheres()
 		self.init_agents()
@@ -292,6 +293,10 @@ class BorderModel(Model):
 		for agent in self.schedule.agents:
 			# Reset speaking turns for every agent
 			agent.has_spoken = False
+
+			# Decay sound memory
+			if len(agent.sound_repository) > self.decay_limit:
+				agent.sound_repository = agent.sound_repository[-self.decay_limit:]
 
 class InfluenceSphere():
 	# This code generates a list of all coordinates which will be inside the influence sphere
