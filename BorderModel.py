@@ -206,7 +206,7 @@ class BorderModel(Model):
 
 		self.init_influence_spheres()
 		self.init_agents()
-		#print(self.influence_spheres[0].coordinates)
+		self.init_data_collect()
 
 	def init_influence_spheres(self):
 		self.influence_spheres = []
@@ -234,12 +234,6 @@ class BorderModel(Model):
 											   sphere["population"], sphere["sound_mean"])
 			self.influence_spheres.append(influence_sphere)
 
-		# Initialise the data collector which will be used for graphing and stats
-		self.datacollector = DataCollector(
-			model_reporters={ "home": lambda model: compute_population(model, "home"),
-							  "travelling": lambda model: compute_population(model, "travelling"),
-							  "visiting": lambda model: compute_population(model, "visiting")})
-
 	def init_agents(self):
 		# Create agents based on population count in the influence spheres
 		agent_no = 0
@@ -256,6 +250,15 @@ class BorderModel(Model):
 				self.grid.place_agent(agent, (location[0], location[1]))
 
 				agent_no += 1
+
+	def init_data_collect(self):
+		# Initialise the data collector which will be used for graphing and stats
+		model_reporters = { "home": lambda model: compute_population(model, "home"),
+							"travelling": lambda model: compute_population(model, "travelling"),
+							"visiting": lambda model: compute_population(model, "visiting") }
+
+		self.datacollector = DataCollector(
+			model_reporters=model_reporters)
 
 	def step(self):
 		self.datacollector.collect(self)
