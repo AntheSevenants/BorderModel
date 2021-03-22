@@ -34,5 +34,14 @@
 		"sound_mean": 0,
 		"name": "Andthrow",
 		"country": "Belgium"
+	},
+	{
+		"x": 85,
+		"y": 90,
+		"radius": 7,
+		"population": 10,
+		"sound_mean": 0,
+		"name": "Turnwood",
+		"country": "Belgium"
 	}
 ]
