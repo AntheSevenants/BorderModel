@@ -315,7 +315,9 @@ class BorderModel(Model):
 		model_reporters = { "home": lambda model: compute_population(model, "home"),
 							"travelling": lambda model: compute_population(model, "travelling"),
 							"visiting": lambda model: compute_population(model, "visiting"),
-							"sound_repo_size": compute_average_sound_repository_size }
+							"sound_repo_size": compute_average_sound_repository_size,
+							"avg_sound_nl": lambda model: model.average_sounds["The Netherlands"],
+							"avg_sound_be": lambda model: model.average_sounds["Belgium"] }
 
 		for influence_sphere in self.influence_spheres:
 			model_reporters["sphere_" + influence_sphere.name] = \

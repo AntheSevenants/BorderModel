@@ -73,8 +73,11 @@ sound_chart = ChartModule(sound_mean_data_groups, data_collector_name='datacolle
 sound_repo_size_chart = ChartModule([{"Label": "sound_repo_size", "Color": "black"}],
                                     data_collector_name='datacollector')
 
+avg_sound_chart = ChartModule([{"Label": "avg_sound_nl", "Color": "#F47D2D"},
+                               {"Label": "avg_sound_be", "Color": "#FEDE00" }])
+
 server = ModularServer(BorderModel,
-                       [grid, chart, sound_chart, sound_repo_size_chart],
+                       [grid, chart, sound_chart, sound_repo_size_chart, avg_sound_chart],
                        "Border Model",
                        {"num_agents":100, "width": width, "height": height})
 server.port = 8521 # The default
