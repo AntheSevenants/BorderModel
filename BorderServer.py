@@ -31,7 +31,7 @@ def influence_sphere_portrayal(influence_sphere):
 width = 100
 height = 100
 
-grid = CanvasGrid(agent_portrayal, influence_sphere_portrayal, width, height, 1000, 1000)
+grid = CanvasGrid(agent_portrayal, influence_sphere_portrayal, width, height, 500, 500)
 chart = ChartModule([{"Label": "home",
                       "Color": "red"},
                       {"Label": "travelling",
@@ -56,7 +56,7 @@ sound_repo_size_chart = ChartModule([{"Label": "sound_repo_size", "Color": "blac
                                     data_collector_name='datacollector')
 
 server = ModularServer(BorderModel,
-                       [chart, sound_chart, sound_repo_size_chart, grid],
+                       [grid, chart, sound_chart, sound_repo_size_chart],
                        "Border Model",
                        {"num_agents":100, "width": width, "height": height})
 server.port = 8521 # The default
