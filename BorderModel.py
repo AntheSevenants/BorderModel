@@ -70,7 +70,7 @@ class BorderAgent(Agent):
 		self.adopt_modifier = 1 # How quickly does this agent want to adapt?
 		self.travel_urge = 1 # How much does this agent want to travel?
 		self.ethnocentrism = 1 # How nationalistic is this agent?
-		self.media_receptiveness = 1 # How receptive is this agent to media influences?
+		self.media_receptiveness = 0.05 # How receptive is this agent to media influences?
 		self.has_spoken = False # Has this agent spoken yet this step?
 
 		# Is the agent travelling?
@@ -96,6 +96,7 @@ class BorderAgent(Agent):
 		self.travel_chance_time()
 		self.move() # TODO: repeat this a number of times probably -- refer to Stanford & Kenny (p. 127)
 		self.speak()
+		self.media_influence()
 	
 	# Attempt to travel
 	def travel_chance_time(self):
@@ -214,6 +215,24 @@ class BorderAgent(Agent):
 		self.travel_sphere = self.influence_sphere
 		self.travel_arrived = False
 		return self.travel(possible_steps)
+
+	# Simulate media influence to the agents
+	def media_influence(self):
+		# Idea = every agent "receives" a sound randomly based on media receptiveness
+		# Sound is based on **average sound** in a country (assumption that media reflect society)
+		# Agents do not *return* a sound -> media are one-sided
+		# Agents in Belgium get influenced by Dutch media as well
+		# (Flemings listened to Dutch radio stations / watched Dutch television extensively in the past)
+		if self.model.random.random() <= self.media_receptiveness:
+			# Define possible countries, add Belgium if Belgium
+			possible_countries = ["The Netherlands"]
+			if self.influence_sphere.country == "Belgium":
+				possible_countries.append(self.influence_sphere.country)
+
+			# Choose a country to receive "media" influence from (will always be The Netherlands for The Netherlands)
+			chosen_country = self.model.random.choice(possible_countries)
+			# Add sound to sound repository
+			self.sound_repository.append(self.model.average_sounds[chosen_country])
 	
 	# Speaking-related code
 	def speak(self):
@@ -305,7 +324,26 @@ class BorderModel(Model):
 		self.datacollector = DataCollector(
 			model_reporters=model_reporters)
 
+	# Compute average sounds which can be used for media influence or the data collector
+	# todo: investigate exponentially weighted moving average
+	def compute_average_sounds(self):
+		# Create sound repositories for both countries
+		average_sound_repository = { "The Netherlands": [],
+									 "Belgium": [] }
+
+		# Add the sound repository of every agent to the common sound repository
+		for agent in self.schedule.agents:
+			average_sound_repository[agent.influence_sphere.country] += agent.sound_repository
+
+		self.average_sounds = { "The Netherlands": None,
+								"Belgium": None }
+
+		# Compute and set the means
+		for country in self.average_sounds:
+			self.average_sounds[country] = statistics.mean(average_sound_repository[country])
+
 	def step(self):
+		self.compute_average_sounds()
 		self.datacollector.collect(self)
 		self.schedule.step()
 
