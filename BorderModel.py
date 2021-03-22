@@ -342,7 +342,7 @@ class BorderModel(Model):
 
 		# Compute and set the means
 		for country in self.average_sounds:
-			self.average_sounds[country] = statistics.mean(average_sound_repository[country])
+			self.average_sounds[country] = round(statistics.mean(average_sound_repository[country]), 2)
 
 	def step(self):
 		self.compute_average_sounds()
