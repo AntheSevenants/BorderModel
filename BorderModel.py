@@ -114,7 +114,7 @@ class BorderAgent(Agent):
 	def set_travel_sphere(self, abroad=False):
 		# Travel chance time is happening
 		# TODO: better decision making on which sphere to travel to
-		# Current implementation = random influence sphere FROM THE SAME COUNTRY
+		# Current implementation = random influence sphere FROM SAME OR NEIGHBOURING COUNTRY
 		while True:
 			travel_sphere = self.random.choice(self.model.influence_spheres)
 			# Keep picking a travel sphere until we've found one that isn't our home sphere
