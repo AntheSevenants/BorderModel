@@ -5,7 +5,8 @@
 		"radius": 10,
 		"population": 10,
 		"sound_mean": 0,
-		"name": "Tildebourg"
+		"name": "Tildebourg",
+		"country": "The Netherlands"
 	},
 	{
 		"x": 20,
@@ -13,7 +14,8 @@
 		"radius": 15,
 		"population": 50,
 		"sound_mean": 0.5,
-		"name": "Amsteryam"
+		"name": "Amsteryam",
+		"country": "The Netherlands"
 	},
 	{
 		"x": 10,
@@ -21,7 +23,8 @@
 		"radius": 7,
 		"population": 5,
 		"sound_mean": 0,
-		"name": "Dogsand"
+		"name": "Dogsand",
+		"country": "The Netherlands"
 	},
 	{
 		"x": 50,
@@ -29,6 +32,7 @@
 		"radius": 12,
 		"population": 35,
 		"sound_mean": 0,
-		"name": "Andthrow"
+		"name": "Andthrow",
+		"country": "Belgium"
 	}
 ]

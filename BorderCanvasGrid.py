@@ -65,6 +65,7 @@ class CanvasGrid(VisualizationElement):
         self,
         portrayal_method,
         influence_sphere_portrayal_method,
+        influence_sphere_circle_portrayal_method,
         grid_width,
         grid_height,
         canvas_width=500,
@@ -83,6 +84,7 @@ class CanvasGrid(VisualizationElement):
         """
         self.portrayal_method = portrayal_method
         self.influence_sphere_portrayal_method = influence_sphere_portrayal_method
+        self.influence_sphere_circle_portrayal_method = influence_sphere_circle_portrayal_method
         self.grid_width = grid_width
         self.grid_height = grid_height
         self.canvas_width = canvas_width
@@ -118,12 +120,7 @@ class CanvasGrid(VisualizationElement):
                     grid_state["cells"][portrayal["Layer"]].append(portrayal)
 
         for influence_sphere in model.influence_spheres:
-            grid_state["spheres"].append({ "x": influence_sphere.x,
-                                           "y": influence_sphere.y,
-                                           "radius": influence_sphere.radius,
-                                           "fillColor": "rgba(32,178,170, 0.2)",
-                                           "strokeColor": "#20b2aa",
-                                           "textColor": "#198e88",
-                                           "name": influence_sphere.name })
+            portrayal = self.influence_sphere_circle_portrayal_method(influence_sphere)
+            grid_state["spheres"].append(portrayal)
 
         return grid_state

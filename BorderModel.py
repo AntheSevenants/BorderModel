@@ -309,8 +309,9 @@ class BorderModel(Model):
 
 class InfluenceSphere():
 	# This code generates a list of all coordinates which will be inside the influence sphere
-	def __init__(self, x, y, radius, population, sound_mean, name):
+	def __init__(self, x, y, radius, population, sound_mean, name, country):
 		self.name = name
+		self.country = country
 
 		self.x = x
 		self.y = y

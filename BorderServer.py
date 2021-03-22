@@ -28,10 +28,28 @@ def influence_sphere_portrayal(influence_sphere):
                  "h": 0.9}
     return portrayal
 
+def influence_sphere_circle_portrayal(influence_sphere):
+    colour_table = { "The Netherlands": { "fillColor": "rgba(243,110,21, 0.2)",
+                                          "strokeColor": "#F47D2D",
+                                          "textColor": "#F36E15" },
+                      "Belgium": { "fillColor": "rgba(254,222,0, 0.2)",
+                                   "strokeColor": "#FEDE00",
+                                   "textColor": "#cbb100" } }
+
+    portrayal = { "x": influence_sphere.x,
+                  "y": influence_sphere.y,
+                  "radius": influence_sphere.radius,
+                  "fillColor": colour_table[influence_sphere.country]["fillColor"],
+                  "strokeColor": colour_table[influence_sphere.country]["strokeColor"],
+                  "textColor": colour_table[influence_sphere.country]["textColor"],
+                  "name": influence_sphere.name }
+    return portrayal
+
 width = 100
 height = 100
 
-grid = CanvasGrid(agent_portrayal, influence_sphere_portrayal, width, height, 500, 500)
+grid = CanvasGrid(agent_portrayal, influence_sphere_portrayal, influence_sphere_circle_portrayal,
+                  width, height, 500, 500)
 chart = ChartModule([{"Label": "home",
                       "Color": "red"},
                       {"Label": "travelling",
