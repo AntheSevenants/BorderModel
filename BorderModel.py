@@ -242,6 +242,7 @@ class BorderModel(Model):
 		self.schedule = RandomActivation(self)
 		self.running = True
 		self.travel_chance = 0.005 # chance of an agent travelling to another sphere each step
+		self.abroad_travel_chance = 0.005 # chance of an agent travelling abroad each step
 		self.return_chance = 0.05 # chance of an agent returning home each step after having arrived
 		self.home_chance = 0.005 # chance of an agent returning home each step after having arrived
 		self.sound_mean_interval = 0.1 # distance of one side of sound interval around sound mean
