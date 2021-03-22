@@ -1,14 +1,14 @@
 [
 	{
-		"x": 30,
-		"y": 60,
+		"x": 80,
+		"y": 40,
 		"radius": 10,
 		"population": 10,
 		"sound_mean": 0,
 		"name": "Tildebourg"
 	},
 	{
-		"x": 60,
+		"x": 20,
 		"y": 20,
 		"radius": 15,
 		"population": 50,
@@ -16,11 +16,19 @@
 		"name": "Amsteryam"
 	},
 	{
-		"x": 70,
-		"y": 80,
+		"x": 10,
+		"y": 60,
 		"radius": 7,
 		"population": 5,
 		"sound_mean": 0,
 		"name": "Dogsand"
+	},
+	{
+		"x": 50,
+		"y": 80,
+		"radius": 12,
+		"population": 35,
+		"sound_mean": 0,
+		"name": "Andthrow"
 	}
 ]
