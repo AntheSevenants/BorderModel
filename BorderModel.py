@@ -105,17 +105,27 @@ class BorderAgent(Agent):
 
 		# Check if travel chance time happens (when number is lower than the model threshold)
 		if self.model.random.random() <= self.model.travel_chance:
-			# Travel chance time is happening
-			# TODO: better decision making on which sphere to travel to
-			# Current implementation = random influence sphere
-			while True:
-				travel_sphere = self.random.choice(self.model.influence_spheres)
-				# Keep picking a travel sphere until we've found one that isn't our home sphere
-				# I don't know whether this is more efficient than removing the home sphere from 
-				# a deepcopy of the list of all spheres but I assume this is better
-				if travel_sphere != self.influence_sphere:
+			self.set_travel_sphere(abroad=False)
+		# Check if ABROAD travel chance time happens
+		elif self.model.random.random() <= self.model.abroad_travel_chance:
+			self.set_travel_sphere(abroad=True)
+
+	# Set a travel sphere
+	def set_travel_sphere(self, abroad=False):
+		# Travel chance time is happening
+		# TODO: better decision making on which sphere to travel to
+		# Current implementation = random influence sphere FROM THE SAME COUNTRY
+		while True:
+			travel_sphere = self.random.choice(self.model.influence_spheres)
+			# Keep picking a travel sphere until we've found one that isn't our home sphere
+			# I don't know whether this is more efficient than removing the home sphere from 
+			# a deepcopy of the list of all spheres but I assume this is better
+			if travel_sphere != self.influence_sphere:
+				if (not abroad and travel_sphere.country == self.influence_sphere.country) or \
+					(abroad and travel_sphere.country != self.influence_sphere.country):
 					self.travel_sphere = travel_sphere # set current travel target to target travel sphere
 					break
+
 
 	# All movement related code 
 	def move(self):
@@ -242,7 +252,7 @@ class BorderModel(Model):
 		self.schedule = RandomActivation(self)
 		self.running = True
 		self.travel_chance = 0.005 # chance of an agent travelling to another sphere each step
-		self.abroad_travel_chance = 0.005 # chance of an agent travelling abroad each step
+		self.abroad_travel_chance = 0.001 # chance of an agent travelling abroad each step
 		self.return_chance = 0.05 # chance of an agent returning home each step after having arrived
 		self.home_chance = 0.005 # chance of an agent returning home each step after having arrived
 		self.sound_mean_interval = 0.1 # distance of one side of sound interval around sound mean
