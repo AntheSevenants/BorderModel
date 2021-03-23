@@ -115,17 +115,23 @@ class BorderAgent(Agent):
 	def set_travel_sphere(self, abroad=False):
 		# Travel chance time is happening
 		# TODO: better decision making on which sphere to travel to
-		# Current implementation = random influence sphere FROM SAME OR NEIGHBOURING COUNTRY
+		# Current implementation = random influence sphere FROM SAME OR NEIGHBOURING COUNTRY
+		# with probabilities based on radiation model (see infra)
 		while True:
 			travel_sphere = self.random.choice(self.model.influence_spheres)
 			# Keep picking a travel sphere until we've found one that isn't our home sphere
 			# I don't know whether this is more efficient than removing the home sphere from 
 			# a deepcopy of the list of all spheres but I assume this is better
 			if travel_sphere != self.influence_sphere:
+				# Country check
 				if (not abroad and travel_sphere.country == self.influence_sphere.country) or \
 					(abroad and travel_sphere.country != self.influence_sphere.country):
-					self.travel_sphere = travel_sphere # set current travel target to target travel sphere
-					break
+
+					# Travel probabilities check
+					if self.model.random.random() <= \
+						self.model.travel_probabilities[(self.influence_sphere.name, travel_sphere.name)]:
+						self.travel_sphere = travel_sphere # set current travel target to target travel sphere
+						break
 
 
 	# All movement related code 
