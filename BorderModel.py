@@ -379,8 +379,7 @@ class BorderModel(Model):
 				spheres_distance = round(spheres_distance)
 
 				# We create a temporary influence sphere in order to be able to assess who lives within the s sphere
-				temp_influence_sphere = InfluenceSphere(influence_sphere_source.x, influence_sphere_source.y, spheres_distance,
-														None, None, None, None)
+				temp_influence_sphere = InfluenceSphere(influence_sphere_source.x, influence_sphere_source.y, spheres_distance)
 				# It is possible that the temporary influence sphere goes outside the grid, so we have to check which coordinates
 				# are actually legal
 				legal_coordinates = [coordinates_pair for coordinates_pair in temp_influence_sphere.coordinates \
@@ -432,7 +431,7 @@ class BorderModel(Model):
 
 class InfluenceSphere():
 	# This code generates a list of all coordinates which will be inside the influence sphere
-	def __init__(self, x, y, radius, population, sound_mean, name, country):
+	def __init__(self, x, y, radius, population=None, sound_mean=None, name=None, country=None):
 		self.name = name
 		self.country = country
 
