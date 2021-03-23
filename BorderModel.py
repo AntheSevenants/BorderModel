@@ -270,6 +270,18 @@ class BorderAgent(Agent):
 			self.has_spoken = True
 			neighbour.has_spoken = True
 
+	# Adopt a sound
+	def adopt_sound(self, sound, sound_origin_country):
+		# If the sound origin country is not the home country, implement the ethnocentrism
+		if sound_origin_country != self.influence_sphere.country:
+			# The higher the ethnocentrism value, the less likely an agent is to adopt the foreign variant
+			if self.model.random.random() <= self.ethnocentrism:
+				return
+
+		# If the sound origin country is the home country, or the ethnocentrism wasn't a big enough influence this time,
+		# just adopt the sound
+		self.sound_repository.append(sound)
+
 class BorderModel(Model):
 	def __init__(self, num_agents, width, height):
 		self.num_agents = num_agents
