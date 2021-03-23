@@ -277,8 +277,11 @@ class BorderModel(Model):
 		self.sound_mean_interval = 0.1 # distance of one side of sound interval around sound mean
 		self.decay_limit = 140 # amount of sounds an agent can remember
 
+		self.travel_probabilities = {} # probabilities of one sphere member travelling to another sphere
+
 		self.init_influence_spheres()
 		self.init_agents()
+		self.compute_radiation_probabilities()
 		self.init_data_collect()
 
 	def init_influence_spheres(self):
@@ -344,6 +347,58 @@ class BorderModel(Model):
 		for country in self.average_sounds:
 			self.average_sounds[country] = round(statistics.mean(average_sound_repository[country]), 2)
 
+	def compute_radiation_probabilities(self):
+		# For each influence sphere, compute the probability of an agent going to another influence sphere
+		for influence_sphere_source in self.influence_spheres:
+			for influence_sphere_destination in self.influence_spheres:
+				# If destination is self, continue
+				if influence_sphere_source == influence_sphere_destination:
+					continue
+
+				# Find out the distance between the points we are comparing, then round it
+				spheres_distance = distance_between_points(influence_sphere_source.x, influence_sphere_destination.x,
+														   influence_sphere_source.y, influence_sphere_destination.y)
+				spheres_distance = round(spheres_distance)
+
+				# We create a temporary influence sphere in order to be able to assess who lives within the s sphere
+				temp_influence_sphere = InfluenceSphere(influence_sphere_source.x, influence_sphere_source.y, spheres_distance,
+														None, None, None, None)
+				# It is possible that the temporary influence sphere goes outside the grid, so we have to check which coordinates
+				# are actually legal
+				legal_coordinates = [coordinates_pair for coordinates_pair in temp_influence_sphere.coordinates \
+									 if coordinates_pair[0] in range(0, self.grid.width) \
+									 and coordinates_pair[1] in range(0, self.grid.height)]
+				# Get the agents living in the calculated cells
+				temp_influence_sphere_population = self.grid.get_cell_list_contents(legal_coordinates)
+
+				# The population is called s-population because it is used for the parameter s in Simini et al. (2012)
+				s_population = []
+				for agent in temp_influence_sphere_population:
+					# If this agent belongs to our comparison population, don't include it
+					if agent.influence_sphere.country in [ influence_sphere_source.country,
+														   influence_sphere_destination.country ]:
+						continue
+
+					s_population.append(agent)
+
+				# Implementation of:
+				# p =               m~i~ * m~j~
+				#     --------------------------------------
+				#     (m~i~ + s~ij~) * (m~i~ + m~j~ + s~ij~)
+				# found in RUG paper (TODO attribution)
+				# In this model: m~i~ = source influence sphere population
+				#                m~j~ = destination influence sphere population
+				#                s~ij~ = "total population (not including the populations of *i* and *j*) living within
+				#                         a circle radius r~ij~ centered on i" (p. 24)     
+				probability = (influence_sphere_source.population * influence_sphere_destination.population) / \
+							  ((influence_sphere_source.population + len(s_population)) * \
+							  (influence_sphere_source.population + influence_sphere_destination.population + len(s_population)))
+
+				# Save the probability to the dict (key = tuple of the travel direction vector)
+				self.travel_probabilities[(influence_sphere_source.name, influence_sphere_destination.name)] = probability
+				print("{} -> {}: {}".format(influence_sphere_source.name, influence_sphere_destination.name,
+											round(probability, 2)))
+
 	def step(self):
 		self.compute_average_sounds()
 		self.datacollector.collect(self)
@@ -374,7 +429,7 @@ class InfluenceSphere():
 		for j in range(x - radius, x + radius + 1):
 			for k in range(y - radius, y + radius + 1):
 				if self.distance({ "x": j, "y": k }, { "x": x, "y": y }) <= radius:
-					self.coordinates.append([ j, k ])
+					self.coordinates.append(( j, k ))
 
 	def distance(self, p1, p2):
 		dx = p2["x"] - p1["x"];
