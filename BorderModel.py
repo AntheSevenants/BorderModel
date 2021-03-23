@@ -238,7 +238,7 @@ class BorderAgent(Agent):
 			# Choose a country to receive "media" influence from (will always be The Netherlands for The Netherlands)
 			chosen_country = self.model.random.choice(possible_countries)
 			# Add sound to sound repository
-			self.sound_repository.append(self.model.average_sounds[chosen_country])
+			self.adopt_sound(self.model.average_sounds[chosen_country], chosen_country)
 	
 	# Speaking-related code
 	def speak(self):
@@ -263,8 +263,8 @@ class BorderAgent(Agent):
 			received_sound = self.model.random.choice(neighbour.sound_repository)
 
 			# Add spoken sound to neighbour's sound repository
-			neighbour.sound_repository.append(spoken_sound)
-			self.sound_repository.append(received_sound)
+			neighbour.adopt_sound(spoken_sound, self.influence_sphere.country)
+			self.adopt_sound(received_sound, neighbour.influence_sphere.country)
 
 			# Set this and the neighbour agent's spoken state to True
 			self.has_spoken = True
