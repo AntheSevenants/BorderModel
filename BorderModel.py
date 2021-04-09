@@ -8,52 +8,8 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
 
-# Data collection function
-# This is really slow, but I can't think of an alternative
-# ...and it works, so...
-def compute_population(model, group):
-	count = 0
-	if group == "home":
-		for agent in model.schedule.agents:
-			# If the agent is not travelling, or they are travelling homewards, count them
-			# as being "home"
-			if not agent.travel_sphere or agent.travel_sphere == agent.influence_sphere:
-				count += 1
-				continue
-	elif group == "travelling":
-		for agent in model.schedule.agents:
-			# If the agent is travelling and the travel target is not the home sphere,
-			# count the agent as "travelling"
-			if agent.travel_sphere and agent.travel_sphere != agent.influence_sphere and not agent.travel_arrived:
-				count += 1
-				continue
-	elif group == "visiting":
-		for agent in model.schedule.agents:
-			# If the agent is travelling and has arrived, count the agent as "visiting"
-			if agent.travel_sphere and agent.travel_arrived:
-				count += 1
-				continue
-
-	return count
-
-# Get the sound mean for a population / influence sphere
-def compute_sound_means(model, influence_sphere_name):
-	population_sound_repository = []
-	for agent in model.schedule.agents:
-		if agent.influence_sphere.name == influence_sphere_name:
-			population_sound_repository += agent.sound_repository
-
-	return round(statistics.mean(population_sound_repository), 2)
-
-def build_sound_mean_lambda(influence_sphere_name):
-	return lambda model: compute_sound_means(model, influence_sphere_name)
-
-def compute_average_sound_repository_size(model):
-	population_sound_repository_lengths = []
-	for agent in model.schedule.agents:
-		population_sound_repository_lengths.append(len(agent.sound_repository))
-
-	return round(statistics.mean(population_sound_repository_lengths))
+def build_sound_mean_lambda_new(influence_sphere_name):
+	return lambda model: model.average_sounds_spheres[influence_sphere_name]
 
 def distance_between_points(x0, x1, y0, y1):
 	return math.hypot(x0 - x1, 
@@ -296,6 +252,7 @@ class BorderModel(Model):
 		self.init_influence_spheres()
 		self.init_agents()
 		self.compute_radiation_probabilities()
+		self.collect_data_bulk()
 		self.init_data_collect()
 
 	def init_influence_spheres(self):
@@ -329,37 +286,75 @@ class BorderModel(Model):
 
 	def init_data_collect(self):
 		# Initialise the data collector which will be used for graphing and stats
-		model_reporters = { "home": lambda model: compute_population(model, "home"),
-							"travelling": lambda model: compute_population(model, "travelling"),
-							"visiting": lambda model: compute_population(model, "visiting"),
-							"sound_repo_size": compute_average_sound_repository_size,
+		model_reporters = { "home": lambda model: model.whereabouts_data["home"],
+							"travelling": lambda model: model.whereabouts_data["travelling"],
+							"visiting": lambda model: model.whereabouts_data["visiting"],
+							"sound_repo_size": lambda model: model.average_population_sound_repository_length,
 							"avg_sound_nl": lambda model: model.average_sounds["The Netherlands"],
 							"avg_sound_be": lambda model: model.average_sounds["Belgium"] }
 
 		for influence_sphere in self.influence_spheres:
 			model_reporters["sphere_" + influence_sphere.name] = \
-				build_sound_mean_lambda(influence_sphere.name)
+				build_sound_mean_lambda_new(influence_sphere.name)
 
 		self.datacollector = DataCollector(
 			model_reporters=model_reporters)
 
-	# Compute average sounds which can be used for media influence or the data collector
-	# todo: investigate exponentially weighted moving average
-	def compute_average_sounds(self):
+	# Data collectors are built in a very clumsy way, so this is an attempt to make data collection more efficient
+	def collect_data_bulk(self):
+		self.whereabouts_data = { "home": 0, "travelling": 0, "visiting": 0 }
+
+		population_sound_repository_lengths = []
+
 		# Create sound repositories for both countries
 		average_sound_repository = { "The Netherlands": [],
 									 "Belgium": [] }
 
-		# Add the sound repository of every agent to the common sound repository
-		for agent in self.schedule.agents:
-			average_sound_repository[agent.influence_sphere.country] += agent.sound_repository
+		average_sound_repository_spheres = { }
+		self.average_sounds_spheres = { }
+		for influence_sphere in self.influence_spheres:
+			average_sound_repository_spheres[influence_sphere.name] = []
+			self.average_sounds_spheres[influence_sphere.name] = 0
 
+		for agent in self.schedule.agents:
+			# ----
+			# Whereabouts
+			# ----
+
+			# If the agent is not travelling, or they are travelling homewards, count them
+			# as being "home"
+			if not agent.travel_sphere or agent.travel_sphere == agent.influence_sphere:
+				self.whereabouts_data["home"] += 1
+			# If the agent is travelling and the travel target is not the home sphere,
+			# count the agent as "travelling"
+			elif agent.travel_sphere and agent.travel_sphere != agent.influence_sphere and not agent.travel_arrived:
+				self.whereabouts_data["travelling"] += 1
+			# If the agent is travelling and has arrived, count the agent as "visiting"
+			elif agent.travel_sphere and agent.travel_arrived:
+				self.whereabouts_data["visiting"] += 1
+
+			# ----
+			# Average sound repository size
+			# ----
+			population_sound_repository_lengths.append(len(agent.sound_repository))
+
+			# ----
+			# Average sounds (real)
+			# ----
+			average_sound_repository[agent.influence_sphere.country] += agent.sound_repository
+			average_sound_repository_spheres[agent.influence_sphere.name] += agent.sound_repository
+
+		self.average_population_sound_repository_length = round(statistics.mean(population_sound_repository_lengths))
+		
 		self.average_sounds = { "The Netherlands": None,
 								"Belgium": None }
-
 		# Compute and set the means
 		for country in self.average_sounds:
 			self.average_sounds[country] = round(statistics.mean(average_sound_repository[country]), 2)
+
+		for influence_sphere in self.influence_spheres:
+			self.average_sounds_spheres[influence_sphere.name] = \
+				round(statistics.mean(average_sound_repository_spheres[influence_sphere.name]), 2)
 
 	# Get a sound from a central region to simulate media influence
 	def get_central_sound(self, country):
@@ -421,7 +416,7 @@ class BorderModel(Model):
 											round(probability, 2)))
 
 	def step(self):
-		self.compute_average_sounds()
+		self.collect_data_bulk()
 		self.datacollector.collect(self)
 		self.schedule.step()
 
