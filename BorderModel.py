@@ -216,7 +216,7 @@ class BorderAgent(Agent):
 			step_dict[distance_from_travel_center] = possible_step
 
 		# Sort the step dict based on distance, get the two shortest steps
-		sorted_step_dict_keys = sorted(step_dict)[:2]
+		sorted_step_dict_keys = sorted(step_dict)[:1]
 		# Chose a random step based on a random key
 		new_position = step_dict[self.model.random.choice(sorted_step_dict_keys)]
 
