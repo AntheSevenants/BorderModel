@@ -199,23 +199,26 @@ class BorderAgent(Agent):
 
 	# Code for travelling to another sphere (or travelling home)
 	def travel(self, possible_steps):
-		# This is a bit of a hack, but I'm keeping track of the step with the lowest distance
-		# to the target. To make sure the first step distance will be used as a reference,
-		# I set the default lowest distance to infinity, so any step will always be lower
-		current_lowest_distance = float('inf')
-		
-		new_position = False
+		# I don't want agents to always take the shortest path, because this causes "trains" which could
+		# interfere with language change patterns
+		# Instead, agents choose from the two closest steps to their target
+
+		# Dict which will keep track of each step and its distance
+		step_dict = {}
+
 		# Check the distance for every possible step
 		for possible_step in possible_steps:
 			# Find the distance to the centre of the travel sphere from the possible next step
 			distance_from_travel_center = distance_between_points(possible_step[0], self.travel_sphere.x, 
 										  	  			   								 possible_step[1], self.travel_sphere.y) 
 			
-			# If the distance found is shorter than the current lowest distance, prefer this possible
-			# step to the one already stored, and update the current lowest distance
-			if distance_from_travel_center < current_lowest_distance:
-				current_lowest_distance = distance_from_travel_center
-				new_position = possible_step
+			# Add this possible step to the step dictionary, so we can sort it later
+			step_dict[distance_from_travel_center] = possible_step
+
+		# Sort the step dict based on distance, get the two shortest steps
+		sorted_step_dict_keys = sorted(step_dict)[:2]
+		# Chose a random step based on a random key
+		new_position = step_dict[self.model.random.choice(sorted_step_dict_keys)]
 
 		return new_position
 
