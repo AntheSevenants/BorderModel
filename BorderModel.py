@@ -105,7 +105,7 @@ class BorderAgent(Agent):
 			return
 
 		# Check if travel chance time happens (when number is lower than the model threshold)
-		if self.model.random.random() <= self.model.travel_chance:
+		if self.model.random.random() <= self.model.domestic_travel_chance:
 			self.set_travel_sphere(abroad=False)
 		# Check if ABROAD travel chance time happens
 		elif self.model.random.random() <= self.model.abroad_travel_chance:
@@ -279,7 +279,7 @@ class BorderModel(Model):
 		self.grid = MultiGrid(width, height, False)
 		self.schedule = RandomActivation(self)
 		self.running = True
-		self.travel_chance = 0.005 # chance of an agent travelling to another sphere each step
+		self.domestic_travel_chance = 0.005 # chance of an agent travelling to another sphere each step
 		self.abroad_travel_chance = 0.001 # chance of an agent travelling abroad each step
 		self.return_chance = 0.05 # chance of an agent returning home each step after having arrived
 		self.home_chance = 0.005 # chance of an agent returning home each step after having arrived
