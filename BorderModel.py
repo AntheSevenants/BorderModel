@@ -241,6 +241,7 @@ class BorderModel(Model):
 	def __init__(self, num_agents, width, height, return_chance=0.05, home_chance=0.005,
 				 	   domestic_travel_chances={ "The Netherlands": 0.005, "Belgium": 0.005 },
 				 	   abroad_travel_chance={ "The Netherlands": 0.001, "Belgium": 0.001 },
+				 	   ethnocentrism=1, media_receptiveness=0.05,
 					   sound_mean_interval=0.1, decay_limit=140):
 		self.num_agents = num_agents
 		self.grid = MultiGrid(width, height, False)
