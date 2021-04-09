@@ -76,6 +76,10 @@ class BorderAgent(Agent):
 		# Is the agent travelling?
 		self.travel_sphere = False # Target sphere when travelling
 		self.travel_arrived = False # Has the agent arrived at travel destination?
+
+		# Travel probabilities
+		self.domestic_travel_chance = 0.005 # chance of an agent travelling to another sphere each step
+		self.abroad_travel_chance = 0.001 # chance of an agent travelling abroad each step
 	
 		self.init_sound(sound_mean)
 
@@ -105,10 +109,10 @@ class BorderAgent(Agent):
 			return
 
 		# Check if travel chance time happens (when number is lower than the model threshold)
-		if self.model.random.random() <= self.model.domestic_travel_chance:
+		if self.model.random.random() <= self.domestic_travel_chance:
 			self.set_travel_sphere(abroad=False)
 		# Check if ABROAD travel chance time happens
-		elif self.model.random.random() <= self.model.abroad_travel_chance:
+		elif self.model.random.random() <= self.abroad_travel_chance:
 			self.set_travel_sphere(abroad=True)
 
 	# Set a travel sphere
@@ -279,8 +283,6 @@ class BorderModel(Model):
 		self.grid = MultiGrid(width, height, False)
 		self.schedule = RandomActivation(self)
 		self.running = True
-		self.domestic_travel_chance = 0.005 # chance of an agent travelling to another sphere each step
-		self.abroad_travel_chance = 0.001 # chance of an agent travelling abroad each step
 		self.return_chance = 0.05 # chance of an agent returning home each step after having arrived
 		self.home_chance = 0.005 # chance of an agent returning home each step after having arrived
 		self.sound_mean_interval = 0.1 # distance of one side of sound interval around sound mean
