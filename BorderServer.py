@@ -3,6 +3,7 @@ import json
 from BorderCanvasGrid import CanvasGrid
 from BorderChartVisualization import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
+from mesa.visualization.UserParam import UserSettableParameter
 from BorderModel import BorderModel
 
 def agent_portrayal(agent):
@@ -76,9 +77,21 @@ sound_repo_size_chart = ChartModule([{"Label": "sound_repo_size", "Color": "blac
 avg_sound_chart = ChartModule([{"Label": "avg_sound_nl", "Color": "#F47D2D"},
                                {"Label": "avg_sound_be", "Color": "#FEDE00" }])
 
+model_params = {"width": width, "height": height,
+                "return_chance": UserSettableParameter('slider', 'Travel return prob.', value=0.05, min_value=0.01, max_value=0.10, step=0.01),
+                "home_chance": UserSettableParameter('slider', 'Homing prob.', value=0.005, min_value=0.001, max_value=0.010, step=0.001),
+                "domestic_travel_chances": { "The Netherlands": 0.005,
+                                             "Belgium": 0.005 },
+                "abroad_travel_chances": { "The Netherlands": 0.001,
+                                             "Belgium": 0.001 },
+                "ethnocentrism": UserSettableParameter('slider', 'Ethnocentrism', value=0.1, min_value=0.1, max_value=1, step=0.1),
+                "media_receptiveness": UserSettableParameter('slider', 'Media receptiveness', value=0.05, min_value=0.01, max_value=0.10, step=0.01),
+                "sound_mean_interval": 0.1,
+                "decay_limit": UserSettableParameter('slider', 'Decay limit', value=140, min_value=1, max_value=200, step=1)}
+
 server = ModularServer(BorderModel,
                        [grid, chart, sound_chart, sound_repo_size_chart, avg_sound_chart],
                        "Border Model",
-                       {"num_agents":100, "width": width, "height": height})
+                       model_params)
 server.port = 8521 # The default
 server.launch()
