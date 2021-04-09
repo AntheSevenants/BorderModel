@@ -6,7 +6,8 @@
 		"population": 10,
 		"sound_mean": 0,
 		"name": "Tildebourg",
-		"country": "The Netherlands"
+		"country": "The Netherlands",
+		"central": false
 	},
 	{
 		"x": 20,
@@ -15,7 +16,8 @@
 		"population": 50,
 		"sound_mean": 0.5,
 		"name": "Amsteryam",
-		"country": "The Netherlands"
+		"country": "The Netherlands",
+		"central": true
 	},
 	{
 		"x": 10,
@@ -24,7 +26,8 @@
 		"population": 5,
 		"sound_mean": 0,
 		"name": "Dogsand",
-		"country": "The Netherlands"
+		"country": "The Netherlands",
+		"central": false
 	},
 	{
 		"x": 50,
@@ -33,7 +36,8 @@
 		"population": 35,
 		"sound_mean": 0,
 		"name": "Andthrow",
-		"country": "Belgium"
+		"country": "Belgium",
+		"central": true
 	},
 	{
 		"x": 85,
@@ -42,6 +46,7 @@
 		"population": 10,
 		"sound_mean": 0,
 		"name": "Turnwood",
-		"country": "Belgium"
+		"country": "Belgium",
+		"central": false
 	}
 ]

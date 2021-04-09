@@ -240,7 +240,7 @@ class BorderAgent(Agent):
 				chosen_country = "The Netherlands" if self.model.random.random() <= 0.25 else "Belgium"
 
 			# Add to sound repository
-			self.adopt_sound(self.model.average_sounds[chosen_country], chosen_country)
+			self.adopt_sound(self.model.get_central_sound(chosen_country), chosen_country)
 			
 	
 	# Speaking-related code
@@ -368,6 +368,14 @@ class BorderModel(Model):
 		for country in self.average_sounds:
 			self.average_sounds[country] = round(statistics.mean(average_sound_repository[country]), 2)
 
+	# Get a sound from a central region to simulate media influence
+	def get_central_sound(self, country):
+		while True:
+			random_agent = self.random.choice(self.schedule.agents)
+			# Return a sound if the agent belongs to the country we want and if their region is central
+			if random_agent.influence_sphere.country == country and random_agent.influence_sphere.central:
+				return self.random.choice(random_agent.sound_repository)
+
 	def compute_radiation_probabilities(self):
 		# For each influence sphere, compute the probability of an agent going to another influence sphere
 		for influence_sphere_source in self.influence_spheres:
@@ -434,7 +442,7 @@ class BorderModel(Model):
 
 class InfluenceSphere():
 	# This code generates a list of all coordinates which will be inside the influence sphere
-	def __init__(self, x, y, radius, population=None, sound_mean=None, name=None, country=None):
+	def __init__(self, x, y, radius, population=None, sound_mean=None, name=None, country=None, central=None):
 		self.name = name
 		self.country = country
 
@@ -443,6 +451,7 @@ class InfluenceSphere():
 		self.radius = radius
 		self.population = population
 		self.sound_mean = sound_mean # the mean around which population values are initialised
+		self.central = central
 
 		self.coordinates = []
 
