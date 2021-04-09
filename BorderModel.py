@@ -245,33 +245,21 @@ class BorderAgent(Agent):
 	
 	# Speaking-related code
 	def speak(self):
-		# If this agent has already appeared in another agent's speaking turn, continue
-		if self.has_spoken:
-			return
-
 		# For the neighbours we *do* want to be using the Moore specification, and also the center (there could be someone we share the space with)
 		neighbourhood = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=True)
 		neighbours = self.model.grid.get_cell_list_contents(neighbourhood)
 		if len(neighbours) > 1:
 			# Select one neighbour
 			neighbour = self.model.random.choice(neighbours)
-
-			# If the neighbour has already had a speaking turn, skip
-			if neighbour.has_spoken:
-				return # TODO: it is possible that the neighbour has spoken to another agent
 			
-			# This agent speaks, and the neighbour agent speaks
-			# They each save each other's 'uttered' sound
+			# This agent speaks, and the neighbour agent saves the sound
 			spoken_sound = self.model.random.choice(self.sound_repository)
-			received_sound = self.model.random.choice(neighbour.sound_repository)
 
 			# Add spoken sound to neighbour's sound repository
 			neighbour.adopt_sound(spoken_sound, self.influence_sphere.country)
-			self.adopt_sound(received_sound, neighbour.influence_sphere.country)
 
-			# Set this and the neighbour agent's spoken state to True
+			# Set this agent's spoken state to True
 			self.has_spoken = True
-			neighbour.has_spoken = True
 
 	# Adopt a sound
 	def adopt_sound(self, sound, sound_origin_country):
