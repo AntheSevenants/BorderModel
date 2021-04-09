@@ -240,7 +240,7 @@ class BorderAgent(Agent):
 class BorderModel(Model):
 	def __init__(self, num_agents, width, height, return_chance=0.05, home_chance=0.005,
 				 	   domestic_travel_chances={ "The Netherlands": 0.005, "Belgium": 0.005 },
-				 	   abroad_travel_chance={ "The Netherlands": 0.001, "Belgium": 0.001 },
+				 	   abroad_travel_chances={ "The Netherlands": 0.001, "Belgium": 0.001 },
 				 	   ethnocentrism=1, media_receptiveness=0.05,
 					   sound_mean_interval=0.1, decay_limit=140):
 		self.num_agents = num_agents
@@ -251,6 +251,11 @@ class BorderModel(Model):
 		self.home_chance = home_chance # chance of an agent returning home each step after having arrived
 		self.sound_mean_interval = sound_mean_interval # distance of one side of sound interval around sound mean
 		self.decay_limit = decay_limit # amount of sounds an agent can remember
+
+		self.domestic_travel_chances = domestic_travel_chances
+		self.abroad_travel_chances = abroad_travel_chances
+		self.ethnocentrism = ethnocentrism
+		self.media_receptiveness = media_receptiveness
 
 		self.travel_probabilities = {} # probabilities of one sphere member travelling to another sphere
 
