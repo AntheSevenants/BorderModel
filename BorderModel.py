@@ -283,8 +283,12 @@ class BorderModel(Model):
 		for influence_sphere in self.influence_spheres:
 			# Create agents
 			for i in range(influence_sphere.population):
-				agent = BorderAgent(agent_no, influence_sphere,
-									influence_sphere.sound_mean, self)
+				agent = BorderAgent(unique_id=agent_no, influence_sphere=influence_sphere,
+									sound_mean=influence_sphere.sound_mean, model=self,
+									ethnocentrism=self.ethnocentrism,
+									media_receptiveness=self.media_receptiveness,
+									domestic_travel_chance=self.domestic_travel_chances[influence_sphere.country],
+									abroad_travel_chance=self.abroad_travel_chances[influence_sphere.country])
 				# Add agent to the scheduler
 				self.schedule.add(agent)
 				
