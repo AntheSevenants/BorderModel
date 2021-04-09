@@ -16,7 +16,7 @@ def distance_between_points(x0, x1, y0, y1):
 					  y0 - y1)
 
 class BorderAgent(Agent):
-	def __init__(self, unique_id, influence_sphere, sound_mean, model):
+	def __init__(self, unique_id, influence_sphere, sound_mean, model, ethnocentrism=1, media_receptiveness=0.05):
 		super().__init__(unique_id, model)
 		self.influence_sphere = influence_sphere
 		self.model = model
@@ -25,8 +25,8 @@ class BorderAgent(Agent):
 		self.sound_repository = [] # Previously heard sounds
 		self.adopt_modifier = 1 # How quickly does this agent want to adapt?
 		self.travel_urge = 1 # How much does this agent want to travel?
-		self.ethnocentrism = 1 # How nationalistic is this agent?
-		self.media_receptiveness = 0.05 # How receptive is this agent to media influences?
+		self.ethnocentrism = ethnocentrism # How nationalistic is this agent?
+		self.media_receptiveness = media_receptiveness # How receptive is this agent to media influences?
 		self.has_spoken = False # Has this agent spoken yet this step?
 
 		# Is the agent travelling?
@@ -237,15 +237,16 @@ class BorderAgent(Agent):
 		self.sound_repository.append(sound)
 
 class BorderModel(Model):
-	def __init__(self, num_agents, width, height):
+	def __init__(self, num_agents, width, height, return_chance=0.05, home_chance=0.005, sound_mean_interval=0.1,
+					   decay_limit=140):
 		self.num_agents = num_agents
 		self.grid = MultiGrid(width, height, False)
 		self.schedule = RandomActivation(self)
 		self.running = True
-		self.return_chance = 0.05 # chance of an agent returning home each step after having arrived
-		self.home_chance = 0.005 # chance of an agent returning home each step after having arrived
-		self.sound_mean_interval = 0.1 # distance of one side of sound interval around sound mean
-		self.decay_limit = 140 # amount of sounds an agent can remember
+		self.return_chance = return_chance # chance of an agent returning home each step after having arrived
+		self.home_chance = home_chance # chance of an agent returning home each step after having arrived
+		self.sound_mean_interval = sound_mean_interval # distance of one side of sound interval around sound mean
+		self.decay_limit = decay_limit # amount of sounds an agent can remember
 
 		self.travel_probabilities = {} # probabilities of one sphere member travelling to another sphere
 
