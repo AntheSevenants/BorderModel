@@ -16,7 +16,8 @@ def distance_between_points(x0, x1, y0, y1):
 					  y0 - y1)
 
 class BorderAgent(Agent):
-	def __init__(self, unique_id, influence_sphere, sound_mean, model, ethnocentrism=1, media_receptiveness=0.05):
+	def __init__(self, unique_id, influence_sphere, sound_mean, model, ethnocentrism=1, media_receptiveness=0.05,
+					   domestic_travel_chance=0.005, abroad_travel_chance=0.001):
 		super().__init__(unique_id, model)
 		self.influence_sphere = influence_sphere
 		self.model = model
@@ -34,8 +35,8 @@ class BorderAgent(Agent):
 		self.travel_arrived = False # Has the agent arrived at travel destination?
 
 		# Travel probabilities
-		self.domestic_travel_chance = 0.005 # chance of an agent travelling to another sphere each step
-		self.abroad_travel_chance = 0.001 # chance of an agent travelling abroad each step
+		self.domestic_travel_chance = domestic_travel_chance # chance of an agent travelling to another sphere each step
+		self.abroad_travel_chance = abroad_travel_chance # chance of an agent travelling abroad each step
 	
 		self.init_sound(sound_mean)
 
