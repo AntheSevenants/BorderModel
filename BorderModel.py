@@ -230,15 +230,18 @@ class BorderAgent(Agent):
 		# Agents in Belgium get influenced by Dutch media as well
 		# (Flemings listened to Dutch radio stations / watched Dutch television extensively in the past)
 		if self.model.random.random() <= self.media_receptiveness:
-			# Define possible countries, add Belgium if Belgium
-			possible_countries = ["The Netherlands"]
-			if self.influence_sphere.country == "Belgium":
-				possible_countries.append(self.influence_sphere.country)
+			# People in The Netherlands rarely watch Belgian television
+			# For Dutch people, we always assign The Netherlands as the source country for media influence
+			if self.influence_sphere.country == "The Netherlands":
+				chosen_country = "The Netherlands"
+			# People in Flanders are avid watchers of Dutch television
+			else:
+				# For Dutch programmes, the ratio should be 1/4 for Dutch television
+				chosen_country = "The Netherlands" if self.model.random.random() <= 0.25 else "Belgium"
 
-			# Choose a country to receive "media" influence from (will always be The Netherlands for The Netherlands)
-			chosen_country = self.model.random.choice(possible_countries)
-			# Add sound to sound repository
+			# Add to sound repository
 			self.adopt_sound(self.model.average_sounds[chosen_country], chosen_country)
+			
 	
 	# Speaking-related code
 	def speak(self):
