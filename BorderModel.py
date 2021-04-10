@@ -336,12 +336,13 @@ class BorderModel(Model):
 					# Ethnocentrism is the proportion of the distance of this agent to the border and the longest distance
 					# to the border in the entire country (the closer to the border, the less ethnocentrism)
 					ethnocentrism = distance_to_border / self.border_longest_distance[influence_sphere.country]
+					ethnocentrism = round(ethnocentrism, 2)
 				else:
 					ethnocentrism = self.ethnocentrism[influence_sphere.country]
 
 				agent = BorderAgent(unique_id=agent_no, influence_sphere=influence_sphere,
 									sound_mean=influence_sphere.sound_mean, model=self,
-									ethnocentrism=self.ethnocentrism[influence_sphere.country],
+									ethnocentrism=ethnocentrism,
 									media_receptiveness=self.media_receptiveness,
 									domestic_travel_chance=self.domestic_travel_chances[influence_sphere.country],
 									abroad_travel_chance=self.abroad_travel_chances[influence_sphere.country])
