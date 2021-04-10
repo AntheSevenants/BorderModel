@@ -78,14 +78,14 @@ avg_sound_chart = ChartModule([{"Label": "avg_sound_nl", "Color": "#F47D2D"},
                                {"Label": "avg_sound_be", "Color": "#FEDE00" }])
 
 model_params = {"width": width, "height": height,
-                "return_chance": UserSettableParameter('slider', '🧳 Travel return prob.', value=0.05, min_value=0.01, max_value=0.10, step=0.01),
-                "home_chance": UserSettableParameter('slider', '🏠 Homing prob.', value=0.005, min_value=0.001, max_value=0.010, step=0.001),
-                "domestic_travel_chance_nl": UserSettableParameter('slider', '🇳🇱 Domestic travel prob.', value=0.005, min_value=0.001, max_value=0.010, step=0.001),
-                "domestic_travel_chance_be": UserSettableParameter('slider', '🇧🇪 Domestic travel prob.', value=0.005, min_value=0.001, max_value=0.010, step=0.001),
-                "abroad_travel_chance_nl": UserSettableParameter('slider', '🇳🇱 Abroad travel prob.', value=0.001, min_value=0.001, max_value=0.010, step=0.001),
-                "abroad_travel_chance_be": UserSettableParameter('slider', '🇧🇪 Abroad travel prob.', value=0.001, min_value=0.001, max_value=0.010, step=0.001),
-                "ethnocentrism": UserSettableParameter('slider', '🦅 Ethnocentrism', value=0.1, min_value=0.1, max_value=1, step=0.1),
-                "media_receptiveness": UserSettableParameter('slider', '📺 Media receptiveness', value=0.05, min_value=0.01, max_value=0.10, step=0.01),
+                "return_chance": UserSettableParameter('slider', '🧳 Travel return prob.', value=0.05, min_value=0, max_value=0.10, step=0.01),
+                "home_chance": UserSettableParameter('slider', '🏠 Homing prob.', value=0.005, min_value=0, max_value=0.010, step=0.001),
+                "domestic_travel_chance_nl": UserSettableParameter('slider', '🇳🇱 Domestic travel prob.', value=0.005, min_value=0, max_value=0.010, step=0.001),
+                "domestic_travel_chance_be": UserSettableParameter('slider', '🇧🇪 Domestic travel prob.', value=0.005, min_value=0, max_value=0.010, step=0.001),
+                "abroad_travel_chance_nl": UserSettableParameter('slider', '🇳🇱 Abroad travel prob.', value=0.001, min_value=0, max_value=0.010, step=0.001),
+                "abroad_travel_chance_be": UserSettableParameter('slider', '🇧🇪 Abroad travel prob.', value=0.001, min_value=0, max_value=0.010, step=0.001),
+                "ethnocentrism": UserSettableParameter('slider', '🦅 Ethnocentrism', value=0.0, min_value=0, max_value=1, step=0.1),
+                "media_receptiveness": UserSettableParameter('slider', '📺 Media receptiveness', value=0.05, min_value=0, max_value=0.10, step=0.01),
                 "sound_mean_interval": 0.1,
                 "decay_limit": UserSettableParameter('slider', '🧠 Decay limit', value=140, min_value=1, max_value=200, step=1)}
 
