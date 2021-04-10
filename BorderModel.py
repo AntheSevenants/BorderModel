@@ -246,7 +246,14 @@ class BorderModel(Model):
 				 	   ethnocentrism_nl=1,
 				 	   ethnocentrism_be=1,
 				 	   media_receptiveness=0.05,
-					   sound_mean_interval=0.1, decay_limit=140):
+					   sound_mean_interval=0.1, decay_limit=140,
+					   border_heights=[ 74, 54 ]):
+
+		self.width = width
+		self.height = height
+
+		# Program the border so it always starts on the horizontal borders (only the y axis is controllable)
+		self.border_coords = [ (0, border_heights[0]), (width, border_heights[1]) ]
 
 		self.grid = MultiGrid(width, height, False)
 		self.schedule = RandomActivation(self)

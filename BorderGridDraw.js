@@ -106,6 +106,12 @@ var GridVisualization = function(width, height, gridWidth, gridHeight, context, 
                 }
         };
 
+        // Draw the border
+        // "Hier begint het WK"
+        this.drawBorder = function(borderCoords) {
+                this.drawLine(borderCoords[0][0], borderCoords[0][1], borderCoords[1][0], borderCoords[1][1], "#857C85");
+        }
+
         // DRAWING METHODS
         // =====================================================================
 
@@ -380,6 +386,31 @@ var GridVisualization = function(width, height, gridWidth, gridHeight, context, 
             context.textAlign = "center";
             context.textBaseline = "middle";
             context.fillText(text, cx, cy);
+        }
+
+        /**
+        Draw a straight line
+        */
+
+        this.drawLine = function(x0, y0, x1, y1, stroke_color)
+        {
+            var x0 = (x0 + 0.5) * cellWidth;
+            var y0 = (y0 + 0.5) * cellHeight;
+            var x1 = (x1 + 0.5) * cellWidth;
+            var y1 = (y1 + 0.5) * cellHeight;
+
+            console.log(x0, y0);
+            console.log(x1, y1);
+
+            context.lineWidth = 1;
+
+            context.beginPath();
+            context.moveTo(x0, y0);
+            context.lineTo(x1, y1);
+            context.closePath();
+
+            context.strokeStyle = stroke_color;
+            context.stroke();
         }
 
         this.resetCanvas = function() {

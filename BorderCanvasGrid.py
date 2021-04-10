@@ -99,7 +99,8 @@ class CanvasGrid(VisualizationElement):
 
     def render(self, model):
         grid_state  = { "cells": defaultdict(list),
-                        "spheres": [] }
+                        "spheres": [],
+                        "border": model.border_coords }
 
         for x in range(model.grid.width):
             for y in range(model.grid.height):
