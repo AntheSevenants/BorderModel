@@ -11,7 +11,13 @@ def agent_portrayal(agent):
                  "Color": "red",
                  "Filled": "true",
                  "Layer": 1,
-                 "r": 0.5}
+                 "r": 0.5,
+                 # Properties,
+                 "Home sphere": agent.influence_sphere.name,
+                 "Home country": agent.influence_sphere.country,
+                 "Travel sphere": agent.travel_sphere.name if agent.travel_sphere else "None",
+                 "Media receptiveness": agent.media_receptiveness,
+                 "Ethnocentrism": agent.ethnocentrism }
 
     if agent.travel_sphere:
         portrayal["Color"] = "green"
