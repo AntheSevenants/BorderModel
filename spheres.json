@@ -1,51 +1,171 @@
 [
 	{
 		"x": 80,
-		"y": 40,
-		"radius": 10,
-		"population": 10,
+		"y": 75,
+		"radius": 12,
+		"population": 397,
 		"sound_mean": 0,
-		"name": "Tildebourg",
+		"name": "Rotterdam",
 		"country": "The Netherlands",
-		"central": false
+		"central": true
 	},
 	{
-		"x": 20,
+		"x": 35,
+		"y": 60,
+		"radius": 10,
+		"population": 318,
+		"sound_mean": 0,
+		"name": "Den Haag",
+		"country": "The Netherlands",
+		"central": true
+	},
+	{
+		"x": 70,
 		"y": 20,
 		"radius": 15,
-		"population": 50,
+		"population": 521,
 		"sound_mean": 0.5,
-		"name": "Amsteryam",
+		"name": "Amsterdam",
 		"country": "The Netherlands",
 		"central": true
 	},
 	{
 		"x": 10,
-		"y": 60,
+		"y": 100,
 		"radius": 7,
-		"population": 5,
+		"population": 12,
 		"sound_mean": 0,
-		"name": "Dogsand",
+		"name": "Middelburg",
 		"country": "The Netherlands",
 		"central": false
 	},
 	{
-		"x": 50,
-		"y": 80,
-		"radius": 12,
-		"population": 35,
+		"x": 120,
+		"y": 50,
+		"radius": 10,
+		"population": 107,
 		"sound_mean": 0,
-		"name": "Andthrow",
-		"country": "Belgium",
+		"name": "Utrecht",
+		"country": "The Netherlands",
 		"central": true
 	},
 	{
 		"x": 85,
-		"y": 90,
-		"radius": 7,
-		"population": 10,
+		"y": 110,
+		"radius": 5,
+		"population": 33,
 		"sound_mean": 0,
-		"name": "Turnwood",
+		"name": "Breda",
+		"country": "The Netherlands",
+		"central": false
+	},
+	{
+		"x": 120,
+		"y": 100,
+		"radius": 7,
+		"population": 58,
+		"sound_mean": 0,
+		"name": "Tilburg",
+		"country": "The Netherlands",
+		"central": false
+	},
+	{
+		"x": 160,
+		"y": 105,
+		"radius": 10,
+		"population": 67,
+		"sound_mean": 0,
+		"name": "Eindhoven",
+		"country": "The Netherlands",
+		"central": false
+	},
+	{
+		"x": 225,
+		"y": 135,
+		"radius": 5,
+		"population": 44,
+		"sound_mean": 0,
+		"name": "Maastricht",
+		"country": "The Netherlands",
+		"central": false
+	},
+	{
+		"x": 110,
+		"y": 150,
+		"radius": 12,
+		"population": 348,
+		"sound_mean": 0,
+		"name": "Antwerpen",
+		"country": "Belgium",
+		"central": true
+	},
+	{
+		"x": 55,
+		"y": 140,
+		"radius": 9,
+		"population": 166,
+		"sound_mean": 0,
+		"name": "Gent",
+		"country": "Belgium",
+		"central": true
+	},
+	{
+		"x": 15,
+		"y": 130,
+		"radius": 7,
+		"population": 55,
+		"sound_mean": 0,
+		"name": "Brugge",
+		"country": "Belgium",
+		"central": false
+	},
+	{
+		"x": 25,
+		"y": 230,
+		"radius": 7,
+		"population": 41,
+		"sound_mean": 0,
+		"name": "Kortrijk",
+		"country": "Belgium",
+		"central": false
+	},
+	{
+		"x": 160,
+		"y": 145,
+		"radius": 7,
+		"population": 18,
+		"sound_mean": 0,
+		"name": "Turnhout",
+		"country": "Belgium",
+		"central": false
+	},
+	{
+		"x": 145,
+		"y": 185,
+		"radius": 7,
+		"population": 48,
+		"sound_mean": 0,
+		"name": "Mechelen",
+		"country": "Belgium",
+		"central": false
+	},
+	{
+		"x": 165,
+		"y": 215,
+		"radius": 7,
+		"population": 46,
+		"sound_mean": 0,
+		"name": "Leuven",
+		"country": "Belgium",
+		"central": false
+	},
+	{
+		"x": 225,
+		"y": 165,
+		"radius": 7,
+		"population": 21,
+		"sound_mean": 0,
+		"name": "Hasselt",
 		"country": "Belgium",
 		"central": false
 	}
