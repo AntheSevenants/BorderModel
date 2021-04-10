@@ -243,7 +243,9 @@ class BorderModel(Model):
 				 	   domestic_travel_chance_be=0.005,
 				 	   abroad_travel_chance_nl=0.001,
 				 	   abroad_travel_chance_be=0.001,
-				 	   ethnocentrism=1, media_receptiveness=0.05,
+				 	   ethnocentrism_nl=1,
+				 	   ethnocentrism_be=1,
+				 	   media_receptiveness=0.05,
 					   sound_mean_interval=0.1, decay_limit=140):
 
 		self.grid = MultiGrid(width, height, False)
@@ -258,7 +260,8 @@ class BorderModel(Model):
 										 "Belgium": domestic_travel_chance_be }
 		self.abroad_travel_chances = { "The Netherlands": abroad_travel_chance_nl,
 										 "Belgium": abroad_travel_chance_be }
-		self.ethnocentrism = ethnocentrism
+		self.ethnocentrism = { "The Netherlands": ethnocentrism_nl,
+							   "Belgium": ethnocentrism_be }
 		self.media_receptiveness = media_receptiveness
 
 		self.travel_probabilities = {} # probabilities of one sphere member travelling to another sphere
@@ -289,7 +292,7 @@ class BorderModel(Model):
 			for i in range(influence_sphere.population):
 				agent = BorderAgent(unique_id=agent_no, influence_sphere=influence_sphere,
 									sound_mean=influence_sphere.sound_mean, model=self,
-									ethnocentrism=self.ethnocentrism,
+									ethnocentrism=self.ethnocentrism[influence_sphere.country],
 									media_receptiveness=self.media_receptiveness,
 									domestic_travel_chance=self.domestic_travel_chances[influence_sphere.country],
 									abroad_travel_chance=self.abroad_travel_chances[influence_sphere.country])
