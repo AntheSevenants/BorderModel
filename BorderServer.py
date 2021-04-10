@@ -86,6 +86,7 @@ model_params = {"width": width, "height": height,
                 "abroad_travel_chance_be": UserSettableParameter('slider', '🇧🇪 Abroad travel prob.', value=0.001, min_value=0, max_value=0.010, step=0.001),
                 "ethnocentrism_nl": UserSettableParameter('slider', '🇳🇱 Ethnocentrism', value=0.85, min_value=0, max_value=1, step=0.1),
                 "ethnocentrism_be": UserSettableParameter('slider', '🇧🇪 Ethnocentrism', value=0.0, min_value=0, max_value=1, step=0.1),
+                "scaled_ethnocentrism": UserSettableParameter('checkbox', '⛰️ Scaled ethnocentrism', value=True),
                 "media_receptiveness": UserSettableParameter('slider', '📺 Media receptiveness', value=0.05, min_value=0, max_value=0.10, step=0.01),
                 "sound_mean_interval": 0.1,
                 "decay_limit": UserSettableParameter('slider', '🧠 Decay limit', value=140, min_value=1, max_value=200, step=1)}

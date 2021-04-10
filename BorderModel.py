@@ -2,6 +2,7 @@
 import math
 import statistics
 import json
+import numpy
 
 from mesa import Agent, Model
 from mesa.time import RandomActivation
@@ -10,6 +11,14 @@ from mesa.datacollection import DataCollector
 
 def build_sound_mean_lambda_new(influence_sphere_name):
 	return lambda model: model.average_sounds_spheres[influence_sphere_name]
+
+# https://stackoverflow.com/questions/39840030/distance-between-point-and-a-line-from-two-points
+def distance_to_line(line_begin, line_end, point):
+	line_begin = numpy.asarray(line_begin)
+	line_end = numpy.asarray(line_end)
+	point = numpy.asarray(point)
+
+	return numpy.abs(numpy.cross(line_end - line_begin, line_begin - point)) / numpy.linalg.norm(line_end - line_begin)
 
 def distance_between_points(x0, x1, y0, y1):
 	return math.hypot(x0 - x1, 
@@ -245,6 +254,7 @@ class BorderModel(Model):
 				 	   abroad_travel_chance_be=0.001,
 				 	   ethnocentrism_nl=1,
 				 	   ethnocentrism_be=1,
+				 	   scaled_ethnocentrism=False,
 				 	   media_receptiveness=0.05,
 					   sound_mean_interval=0.1, decay_limit=140,
 					   border_heights=[ 74, 54 ]):
@@ -254,6 +264,7 @@ class BorderModel(Model):
 
 		# Program the border so it always starts on the horizontal borders (only the y axis is controllable)
 		self.border_coords = [ (0, border_heights[0]), (width, border_heights[1]) ]
+		self.set_border_longest_distance()
 
 		self.grid = MultiGrid(width, height, False)
 		self.schedule = RandomActivation(self)
@@ -269,6 +280,7 @@ class BorderModel(Model):
 										 "Belgium": abroad_travel_chance_be }
 		self.ethnocentrism = { "The Netherlands": ethnocentrism_nl,
 							   "Belgium": ethnocentrism_be }
+		self.scaled_ethnocentrism = scaled_ethnocentrism
 		self.media_receptiveness = media_receptiveness
 
 		self.travel_probabilities = {} # probabilities of one sphere member travelling to another sphere
@@ -278,6 +290,24 @@ class BorderModel(Model):
 		self.compute_radiation_probabilities()
 		self.collect_data_bulk()
 		self.init_data_collect()
+
+	# We want to get the longest distance from the border to the top or bottom, depending on the country
+	def set_border_longest_distance(self):
+		self.border_longest_distance = { "The Netherlands": [],
+										 "Belgium": [] }
+
+		# Go over each x coordinate to see which distance is the longest
+		for x in range(0, self.width + 1, 1):
+			nl_point = (x, 0) # Dutch points are calculated from the top
+			be_point = (x, self.height) # Belgium points are calculated form the bottom
+
+			self.border_longest_distance["The Netherlands"].append(distance_to_line(self.border_coords[0],
+																		  self.border_coords[1], nl_point))
+			self.border_longest_distance["Belgium"].append(distance_to_line(self.border_coords[0],
+																		  self.border_coords[1], be_point))
+		
+		self.border_longest_distance = { "The Netherlands": round(max(self.border_longest_distance["The Netherlands"])),
+										 "Belgium": round(max(self.border_longest_distance["Belgium"])) }
 
 	def init_influence_spheres(self):
 		self.influence_spheres = []
@@ -297,6 +327,18 @@ class BorderModel(Model):
 		for influence_sphere in self.influence_spheres:
 			# Create agents
 			for i in range(influence_sphere.population):
+				# Define a location for this agent (we need to know this beforehand to be able to seed ethnocentrism)
+				location = self.random.choice(influence_sphere.coordinates)
+
+				# Assign value for ethnocentrism based on whether it is seeded or not
+				if self.scaled_ethnocentrism:
+					distance_to_border = distance_to_line(self.border_coords[0], self.border_coords[1], location)
+					# Ethnocentrism is the proportion of the distance of this agent to the border and the longest distance
+					# to the border in the entire country (the closer to the border, the less ethnocentrism)
+					ethnocentrism = distance_to_border / self.border_longest_distance[influence_sphere.country]
+				else:
+					ethnocentrism = self.ethnocentrism[influence_sphere.country]
+
 				agent = BorderAgent(unique_id=agent_no, influence_sphere=influence_sphere,
 									sound_mean=influence_sphere.sound_mean, model=self,
 									ethnocentrism=self.ethnocentrism[influence_sphere.country],
@@ -307,7 +349,6 @@ class BorderModel(Model):
 				self.schedule.add(agent)
 				
 				# Place the newly created agent on the grid
-				location = self.random.choice(influence_sphere.coordinates)
 				self.grid.place_agent(agent, (location[0], location[1]))
 
 				agent_no += 1
