@@ -4,6 +4,7 @@ import statistics
 import json
 import numpy
 import pprint
+import sys
 
 from mesa import Agent, Model
 from mesa.time import RandomActivation
@@ -24,6 +25,61 @@ def distance_to_line(line_begin, line_end, point):
 def distance_between_points(x0, x1, y0, y1):
 	return math.hypot(x0 - x1, 
 					  y0 - y1)
+
+# Tron path
+def tronPath(a, b, minimum_distance):
+	path = [];
+
+	x = a["x"]
+	y = a["y"];                         # starting cell
+	dx = 0 if a["x"] == b["x"] else 1 if b["x"] > a["x"] else -1 # right or left
+	dy = 0 if a["y"] == b["y"] else 1 if b["y"] > a["y"] else -1 # up or down
+
+	if dx == 0:
+		if b["y"] > a["y"]:
+			path = [ ( a["x"], y ) for y in range(a["y"] + 1, b["y"] + 1, 1)]
+		else:
+			path = [ ( a["x"], y ) for y in range(b["y"] + 1, a["y"] + 1, 1)]
+			path.reverse()
+	elif dy == 0:
+		if b["x"] > a["x"]:
+			path = [ ( x, a["y"] ) for x in range(a["x"] + 1, b["x"] + 1, 1)]
+		else:
+			path = [ ( x, a["y"] ) for x in range(b["x"] + 1, a["x"] + 1, 1)]
+			path.reverse()
+	elif (abs(b["x"] - a["x"]) > abs(b["y"] - a["y"])):
+		# MAINLY HORIZONTAL
+		tan = (b["y"] - a["y"]) / (b["x"] - a["x"]);      # tangent
+		maxd = (1 - abs(tan)) / 2;        # distance threshold
+		while x != b["x"] or y != b["y"]:            # while target not reached
+			ideal = a["y"] + (x - a["x"]) * tan;    # y of ideal line at x
+			if ((ideal - y) * dy >= maxd):
+				y += dy; # move vertically
+			else:
+				x += dx;                         # move horizontally
+			path.append( (x, y) );                # add cell to path
+	else:
+		# MAINLY VERTICAL
+		cotan = (b["x"] - a["x"]) / (b["y"] - a["y"]);    # cotangent
+		maxd = (1 - abs(cotan)) / 2;      # distance threshold
+		while x != b["x"] or y != b["y"]:           # while target not reached
+			ideal = a["x"] + (y - a["y"]) * cotan;  # x of ideal line at y
+			if ((ideal - x) * dx >= maxd):
+				x += dx; # move horizontally
+			else:
+				y += dy;                         # move vertically
+			path.append( (x, y) );                # add cell to path
+
+	# Make sure the agent arrives once he reaches the minimum distance from the centre
+	n = len(path)
+	for point in reversed(path):
+		point_distance = distance_between_points(point[0], b["x"], point[1], b["y"])
+		if point_distance >= minimum_distance:
+			break
+
+		n -= 1
+
+	return path[:n];
 
 class BorderAgent(Agent):
 	def __init__(self, unique_id, influence_sphere, sound_mean, model, ethnocentrism=1, media_receptiveness=0.05,
@@ -102,8 +158,97 @@ class BorderAgent(Agent):
 					if self.model.random.random() <= \
 						self.model.travel_probabilities[(self.influence_sphere.name, travel_sphere.name)]:
 						self.travel_sphere = travel_sphere # set current travel target to target travel sphere
+						self.set_travel_path()
 						break
 
+	def set_travel_path(self):
+		A = (self.influence_sphere.x, self.influence_sphere.y)
+		B = (self.travel_sphere.x, self.travel_sphere.y)
+
+		m = slope(A, B)
+		b = intercept(A, m)
+
+		coordinates = [];
+		for x in range(A[0], B[0] + 1, 1):
+			y = m * x + b
+			coordinates.append([round(x), round(y)])
+
+		print(coordinates)
+
+	def set_travel_path(self):
+		x1 = self.influence_sphere.x
+		y1 = self.influence_sphere.y
+		x2 = self.travel_sphere.x
+		y2 = self.travel_sphere.y
+
+		points = []
+		issteep = abs(y2-y1) > abs(x2-x1)
+		if issteep:
+			x1, y1 = y1, x1
+			x2, y2 = y2, x2
+		rev = False
+		if x1 > x2:
+			x1, x2 = x2, x1
+			y1, y2 = y2, y1
+			rev = True
+		deltax = x2 - x1
+		deltay = abs(y2-y1)
+		error = int(deltax / 2)
+		y = y1
+		ystep = None
+		if y1 < y2:
+			ystep = 1
+		else:
+			ystep = -1
+		for x in range(x1, x2 + 1):
+			if issteep:
+				points.append((y, x))
+			else:
+				points.append((x, y))
+			error -= deltay
+			if error < 0:
+				y += ystep
+				error += deltax
+		# Reverse the list if the coordinates were reversed
+		if rev:
+			points.reverse()
+		
+		print(points)
+
+		# Interpolate points
+		n = 0
+		interpolated_points = []
+		for point in points:
+			interpolated_points.append(point)
+
+			print("Current point")
+			print(point)
+
+			if n - 1 >= len(points):
+				break
+
+			print("Next point")
+			print(points[n+1])
+
+			if point[0] == points[n + 1][0] or point[1] == points[n + 1][1]:
+				pass
+			else:
+				print("Inserting interpolated point")
+				chosen_point = self.model.random.choice([ (point[0] + 1, point[1]),
+																	  (point[0], point[1] + 1) ])
+				print(chosen_point)
+				interpolated_points.append(chosen_point)
+
+			n += 1
+
+		print(interpolated_points)
+		sys.exit(0)
+
+	def set_travel_path(self):
+		a = { "x": self.pos[0], "y": self.pos[1] }
+		b = { "x": self.travel_sphere.x, "y": self.travel_sphere.y }
+
+		self.path = tronPath(a, b, self.travel_sphere.radius / 2)
 
 	# All movement related code 
 	def move(self):
@@ -121,11 +266,9 @@ class BorderAgent(Agent):
 		else:
 			# If we have not yet arrived at the destination sphere
 			if not self.travel_arrived:
-				distance_from_travel_center = distance_between_points(self.pos[0], self.travel_sphere.x, 
-												  	  			   	  self.pos[1], self.travel_sphere.y) 
-
 				# If we are within half the radius of the travel sphere, then...
-				if distance_from_travel_center <= self.travel_sphere.radius / 2:
+				#print(len(self.path))
+				if len(self.path) == 0:
 					# 1. set travel status to arrived
 					self.travel_arrived = True
 
@@ -159,7 +302,7 @@ class BorderAgent(Agent):
 		legal_steps = []
 		for possible_step in possible_steps:
 			distance_from_center = distance_between_points(possible_step[0], self.influence_sphere.x, 
-										  	  			   possible_step[1], self.influence_sphere.y)
+														   possible_step[1], self.influence_sphere.y)
 			
 			if distance_from_center <= self.influence_sphere.radius:
 				legal_steps.append(possible_step)
@@ -177,7 +320,7 @@ class BorderAgent(Agent):
 		for possible_step in possible_steps:
 			# Find the distance to the centre of the travel sphere from the possible next step
 			distance_from_travel_center = distance_between_points(possible_step[0], self.travel_sphere.x, 
-										  	  			   								 possible_step[1], self.travel_sphere.y) 
+																						 possible_step[1], self.travel_sphere.y) 
 			
 			# Add this possible step to the step dictionary, so we can sort it later
 			step_dict[distance_from_travel_center] = possible_step
@@ -189,10 +332,24 @@ class BorderAgent(Agent):
 
 		return new_position
 
+	# Code for travelling to another sphere
+	def travel(self, possible_steps):
+		new_position = self.path[0]
+		self.path = self.path[1:]
+
+		return new_position
+
 	# Code for returning home
 	def home(self, possible_steps):
 		# Set the travel sphere to the home sphere
 		self.travel_sphere = self.influence_sphere
+		self.set_travel_path()
+
+		# If we are already close enough to home, just wander
+		if len(self.path) == 0:
+			self.travel_sphere = False
+			return self.wander(possible_steps)
+
 		self.travel_arrived = False
 		return self.travel(possible_steps)
 
@@ -249,14 +406,14 @@ class BorderAgent(Agent):
 
 class BorderModel(Model):
 	def __init__(self, width, height, return_chance=0.05, home_chance=0.005,
-				 	   domestic_travel_chance_nl=0.005,
-				 	   domestic_travel_chance_be=0.005,
-				 	   abroad_travel_chance_nl=0.001,
-				 	   abroad_travel_chance_be=0.001,
-				 	   ethnocentrism_nl=1,
-				 	   ethnocentrism_be=1,
-				 	   scaled_ethnocentrism=False,
-				 	   media_receptiveness=0.05,
+					   domestic_travel_chance_nl=0.005,
+					   domestic_travel_chance_be=0.005,
+					   abroad_travel_chance_nl=0.001,
+					   abroad_travel_chance_be=0.001,
+					   ethnocentrism_nl=1,
+					   ethnocentrism_be=1,
+					   scaled_ethnocentrism=False,
+					   media_receptiveness=0.05,
 					   sound_mean_interval=0.1, decay_limit=140,
 					   border_heights=[ 74, 54 ]):
 
@@ -293,6 +450,8 @@ class BorderModel(Model):
 		self.compute_radiation_probabilities()
 		self.collect_data_bulk()
 		self.init_data_collect()
+
+		self.step()
 
 	# We want to get the longest distance from the border to the top or bottom, depending on the country
 	def set_border_longest_distance(self):
