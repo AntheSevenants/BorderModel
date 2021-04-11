@@ -1,11 +1,11 @@
 [
 	{
 		"x": 80,
-		"y": 40,
+		"y": 90,
 		"radius": 10,
-		"population": 10,
+		"population": 29,
 		"sound_mean": 0,
-		"name": "Tildebourg",
+		"name": "Tilburg",
 		"country": "The Netherlands",
 		"central": false
 	},
@@ -13,39 +13,69 @@
 		"x": 20,
 		"y": 20,
 		"radius": 15,
-		"population": 50,
-		"sound_mean": 0.5,
-		"name": "Amsteryam",
+		"population": 261,
+		"sound_mean": 0.9,
+		"name": "Amsterdam",
+		"country": "The Netherlands",
+		"central": true
+	},
+	{
+		"x": 55,
+		"y": 40,
+		"radius": 10,
+		"population": 54,
+		"sound_mean": 0.9,
+		"name": "Utrecht",
 		"country": "The Netherlands",
 		"central": true
 	},
 	{
 		"x": 10,
-		"y": 60,
+		"y": 110,
 		"radius": 7,
-		"population": 5,
+		"population": 15,
 		"sound_mean": 0,
-		"name": "Dogsand",
+		"name": "Breda",
 		"country": "The Netherlands",
 		"central": false
 	},
 	{
 		"x": 50,
-		"y": 80,
+		"y": 130,
 		"radius": 12,
-		"population": 35,
+		"population": 174,
 		"sound_mean": 0,
-		"name": "Andthrow",
+		"name": "Antwerpen",
 		"country": "Belgium",
 		"central": true
 	},
 	{
 		"x": 85,
-		"y": 90,
+		"y": 130,
 		"radius": 7,
-		"population": 10,
+		"population": 9,
 		"sound_mean": 0,
-		"name": "Turnwood",
+		"name": "Turnhout",
+		"country": "Belgium",
+		"central": false
+	},
+	{
+		"x": 65,
+		"y": 180,
+		"radius": 7,
+		"population": 24,
+		"sound_mean": 0,
+		"name": "Mechelen",
+		"country": "Belgium",
+		"central": false
+	},
+	{
+		"x": 7,
+		"y": 190,
+		"radius": 5,
+		"population": 12,
+		"sound_mean": 0,
+		"name": "Dendermonde",
 		"country": "Belgium",
 		"central": false
 	}
