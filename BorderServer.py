@@ -75,7 +75,7 @@ with open("spheres.json") as spheres_file:
     sound_mean_data_groups.append({"Label": "sphere_" + sphere["name"], "Color": colours[i]})
     i += 1
 
-sound_chart = ChartModule(sound_mean_data_groups, data_collector_name='datacollector')
+sound_chart = ChartModule(sound_mean_data_groups, data_collector_name='datacollector', canvas_height=400)
 
 sound_repo_size_chart = ChartModule([{"Label": "sound_repo_size", "Color": "black"}],
                                     data_collector_name='datacollector')
