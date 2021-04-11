@@ -687,14 +687,12 @@ class BorderModel(Model):
 			
 			# Compute probabilities depending on total influence on this sphere
 			for influence_source_country in influence_sources:
-				print(influence_source_country)
-
 				for influence_source in influence_sources[influence_source_country]:
 					self.travel_probabilities[(influence_sphere_destination.name, influence_source)] = \
 						round(influence_sources[influence_source_country][influence_source] / total_influence[influence_source_country], 2)
 
-		pp = pprint.PrettyPrinter(indent=4)
-		pp.pprint(self.travel_probabilities)
+		#pp = pprint.PrettyPrinter(indent=4)
+		#pp.pprint(self.travel_probabilities)
 
 	def step(self):
 		self.collect_data_bulk()
