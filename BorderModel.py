@@ -3,6 +3,7 @@ import math
 import statistics
 import json
 import numpy
+import pprint
 
 from mesa import Agent, Model
 from mesa.time import RandomActivation
@@ -262,6 +263,8 @@ class BorderModel(Model):
 		self.width = width
 		self.height = height
 
+		self.num_agents = 0
+
 		# Program the border so it always starts on the horizontal borders (only the y axis is controllable)
 		self.border_coords = [ (0, border_heights[0]), (width, border_heights[1]) ]
 		self.set_border_longest_distance()
@@ -353,6 +356,8 @@ class BorderModel(Model):
 				self.grid.place_agent(agent, (location[0], location[1]))
 
 				agent_no += 1
+
+		self.num_agents = agent_no
 
 	def init_data_collect(self):
 		# Initialise the data collector which will be used for graphing and stats
@@ -484,6 +489,51 @@ class BorderModel(Model):
 				self.travel_probabilities[(influence_sphere_source.name, influence_sphere_destination.name)] = probability
 				print("{} -> {}: {}".format(influence_sphere_source.name, influence_sphere_destination.name,
 											round(probability, 2)))
+
+	def compute_radiation_probabilities(self):
+		# For each influence sphere, compute the probability of an agent going to another influence sphere
+		for influence_sphere_destination in self.influence_spheres:
+			influence_sources = { "The Netherlands": {},
+								  "Belgium": {} }
+			total_influence = { "The Netherlands": 0,
+								  "Belgium": 0 }
+
+			for influence_sphere_source in self.influence_spheres:
+				# If destination is self, continue
+				if influence_sphere_source == influence_sphere_destination:
+					continue
+
+				# Find out the distance between the points we are comparing, then round it
+				spheres_distance = distance_between_points(influence_sphere_source.x, influence_sphere_destination.x,
+														   influence_sphere_source.y, influence_sphere_destination.y)
+				spheres_distance = round(spheres_distance)
+
+				# Implementation of:
+				#       P~i~ * P~j~                P~i~
+				# ------------------------- * --------------
+				#          d~ij~²              P~i~ + P~j~
+				influence = ((influence_sphere_source.population * influence_sphere_destination.population) / \
+												(spheres_distance * spheres_distance)) * \
+				((influence_sphere_source.population) / (influence_sphere_source.population + influence_sphere_destination.population))
+
+				# Idea: SOURCE OF INFLUENCE -> DESTINATION OF INFLUENCE
+				# is the result of DESTINATION visiting SOURCE
+				# so: REVERSAL = travel probabilities
+
+				# Save the probability to the a temporary dict
+				influence_sources[influence_sphere_source.country][influence_sphere_source.name] = influence
+				total_influence[influence_sphere_source.country] += influence
+			
+			# Compute probabilities depending on total influence on this sphere
+			for influence_source_country in influence_sources:
+				print(influence_source_country)
+
+				for influence_source in influence_sources[influence_source_country]:
+					self.travel_probabilities[(influence_sphere_destination.name, influence_source)] = \
+						round(influence_sources[influence_source_country][influence_source] / total_influence[influence_source_country], 2)
+
+		pp = pprint.PrettyPrinter(indent=4)
+		pp.pprint(self.travel_probabilities)
 
 	def step(self):
 		self.collect_data_bulk()
