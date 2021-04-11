@@ -123,7 +123,9 @@ class BorderAgent(Agent):
 		self.travel_chance_time()
 		self.move() # TODO: repeat this a number of times probably -- refer to Stanford & Kenny (p. 127)
 		self.speak()
-		self.media_influence()
+
+		if self.media_receptiveness:
+			self.media_influence()
 	
 	# Attempt to travel
 	def travel_chance_time(self):
