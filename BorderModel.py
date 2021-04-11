@@ -132,10 +132,10 @@ class BorderAgent(Agent):
 			return
 
 		# Check if travel chance time happens (when number is lower than the model threshold)
-		if self.model.random.random() <= self.domestic_travel_chance:
+		if self.model.random.random() < self.domestic_travel_chance:
 			self.set_travel_sphere(abroad=False)
 		# Check if ABROAD travel chance time happens
-		elif self.model.random.random() <= self.abroad_travel_chance:
+		elif self.model.random.random() < self.abroad_travel_chance:
 			self.set_travel_sphere(abroad=True)
 
 	# Set a travel sphere
@@ -155,7 +155,7 @@ class BorderAgent(Agent):
 					(abroad and travel_sphere.country != self.influence_sphere.country):
 
 					# Travel probabilities check
-					if self.model.random.random() <= \
+					if self.model.random.random() < \
 						self.model.travel_probabilities[(self.influence_sphere.name, travel_sphere.name)]:
 						self.travel_sphere = travel_sphere # set current travel target to target travel sphere
 						self.set_travel_path()
@@ -258,7 +258,7 @@ class BorderAgent(Agent):
 		# If not travelling, wander
 		if not self.travel_sphere:
 			# Every once in a while, an agent should attempt to return home
-			if self.model.random.random() <= self.model.home_chance:
+			if self.model.random.random() < self.model.home_chance:
 				new_position = self.home(possible_steps)
 			else:
 				new_position = self.wander(possible_steps)
@@ -284,7 +284,7 @@ class BorderAgent(Agent):
 					new_position = self.travel(possible_steps)
 			else:
 				# Check if we ought to return home (when number is lower than the model threshold)
-				if self.model.random.random() <= self.model.return_chance:
+				if self.model.random.random() < self.model.return_chance:
 					# We just initiate a new travel, but this time with the home sphere as the target
 					new_position = self.home(possible_steps)
 				else:
@@ -304,7 +304,7 @@ class BorderAgent(Agent):
 			distance_from_center = distance_between_points(possible_step[0], self.influence_sphere.x, 
 														   possible_step[1], self.influence_sphere.y)
 			
-			if distance_from_center <= self.influence_sphere.radius:
+			if distance_from_center < self.influence_sphere.radius:
 				legal_steps.append(possible_step)
 
 	# Code for travelling to another sphere (or travelling home)
@@ -360,7 +360,7 @@ class BorderAgent(Agent):
 		# Agents do not *return* a sound -> media are one-sided
 		# Agents in Belgium get influenced by Dutch media as well
 		# (Flemings listened to Dutch radio stations / watched Dutch television extensively in the past)
-		if self.model.random.random() <= self.media_receptiveness:
+		if self.model.random.random() < self.media_receptiveness:
 			# People in The Netherlands rarely watch Belgian television
 			# For Dutch people, we always assign The Netherlands as the source country for media influence
 			if self.influence_sphere.country == "The Netherlands":
@@ -397,7 +397,7 @@ class BorderAgent(Agent):
 		# If the sound origin country is not the home country, implement the ethnocentrism
 		if sound_origin_country != self.influence_sphere.country:
 			# The higher the ethnocentrism value, the less likely an agent is to adopt the foreign variant
-			if self.model.random.random() <= self.ethnocentrism:
+			if self.model.random.random() < self.ethnocentrism:
 				return
 
 		# If the sound origin country is the home country, or the ethnocentrism wasn't a big enough influence this time,
