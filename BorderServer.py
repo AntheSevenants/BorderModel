@@ -52,11 +52,11 @@ def influence_sphere_circle_portrayal(influence_sphere):
                   "name": influence_sphere.name }
     return portrayal
 
-width = 250
-height = 250
+width = 100
+height = 200
 
 grid = CanvasGrid(agent_portrayal, influence_sphere_portrayal, influence_sphere_circle_portrayal,
-                  width, height, 1000, 1000)
+                  width, height, 500, 1000)
 chart = ChartModule([{"Label": "home",
                       "Color": "red"},
                       {"Label": "travelling",
@@ -65,13 +65,7 @@ chart = ChartModule([{"Label": "home",
                       "Color": "orange"},],
                     data_collector_name='datacollector')
 
-colours = [ "red", "green", "orange", "blue", "purple", "teal", "yellow",
-"red", "green", "orange", "blue", "purple", "teal", "yellow",
-"red", "green", "orange", "blue", "purple", "teal", "yellow",
-"red", "green", "orange", "blue", "purple", "teal", "yellow",
-"red", "green", "orange", "blue", "purple", "teal", "yellow",
-"red", "green", "orange", "blue", "purple", "teal", "yellow"
-     ]
+colours = [ "red", "green", "orange", "blue", "purple", "teal", "yellow", "pink" ]
 sound_mean_data_groups = []
 with open("spheres.json") as spheres_file:
   spheres = json.load(spheres_file)
@@ -102,7 +96,7 @@ model_params = {"width": width, "height": height,
                 "media_receptiveness": UserSettableParameter('slider', '📺 Media receptiveness', value=0.05, min_value=0, max_value=0.10, step=0.01),
                 "sound_mean_interval": 0.1,
                 "decay_limit": UserSettableParameter('slider', '🧠 Decay limit', value=140, min_value=1, max_value=200, step=1),
-                "border_heights": [ 114, 144 ] }
+                "border_heights": [ 124, 104 ]}
 
 server = ModularServer(BorderModel,
                        [grid, chart, sound_chart, sound_repo_size_chart, avg_sound_chart],
