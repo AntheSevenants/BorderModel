@@ -707,6 +707,9 @@ class BorderModel(Model):
 			if len(agent.sound_repository) > self.decay_limit:
 				agent.sound_repository = agent.sound_repository[-self.decay_limit:]
 
+		if self.schedule.steps == 10000:
+			self.running = False
+
 class InfluenceSphere():
 	# This code generates a list of all coordinates which will be inside the influence sphere
 	def __init__(self, x, y, radius, population=None, sound_mean=None, name=None, country=None, central=None):
