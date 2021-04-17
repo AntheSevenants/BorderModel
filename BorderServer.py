@@ -53,10 +53,10 @@ def influence_sphere_circle_portrayal(influence_sphere):
     return portrayal
 
 width = 100
-height = 200
+height = 240
 
 grid = CanvasGrid(agent_portrayal, influence_sphere_portrayal, influence_sphere_circle_portrayal,
-                  width, height, 500, 1000)
+                  width, height, 500, 1200)
 chart = ChartModule([{"Label": "home",
                       "Color": "red"},
                       {"Label": "travelling",
@@ -65,7 +65,7 @@ chart = ChartModule([{"Label": "home",
                       "Color": "orange"},],
                     data_collector_name='datacollector')
 
-colours = [ "red", "green", "orange", "blue", "purple", "teal", "yellow", "pink" ]
+colours = [ "red", "green", "orange", "blue", "purple", "teal", "yellow", "pink", "gold" ]
 sound_mean_data_groups = []
 with open("spheres.json") as spheres_file:
   spheres = json.load(spheres_file)

@@ -11,21 +11,21 @@
 	},
 	{
 		"x": 20,
-		"y": 20,
+		"y": 50,
 		"radius": 15,
-		"population": 250,
+		"population": 194,
 		"sound_mean": 0.9,
-		"name": "Amsterdam",
+		"name": "Rotterdam",
 		"country": "The Netherlands",
 		"central": true
 	},
 	{
-		"x": 55,
-		"y": 40,
-		"radius": 10,
-		"population": 51,
+		"x": 75,
+		"y": 15,
+		"radius": 8,
+		"population": 18,
 		"sound_mean": 0.9,
-		"name": "Utrecht",
+		"name": "Hilversum",
 		"country": "The Netherlands",
 		"central": true
 	},
@@ -57,7 +57,7 @@
 		"sound_mean": 0,
 		"name": "Turnhout",
 		"country": "Belgium",
-		"central": false
+		"central": true
 	},
 	{
 		"x": 65,
@@ -67,7 +67,17 @@
 		"sound_mean": 0,
 		"name": "Mechelen",
 		"country": "Belgium",
-		"central": false
+		"central": true
+	},
+	{
+		"x": 65,
+		"y": 220,
+		"radius": 6,
+		"population": 23,
+		"sound_mean": 0,
+		"name": "Leuven",
+		"country": "Belgium",
+		"central": true
 	},
 	{
 		"x": 7,
