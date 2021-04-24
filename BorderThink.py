@@ -17,7 +17,7 @@ args = parser.parse_args()
 
 fixed_params = {
 	"width": 100,
-	"height": 200,
+	"height": 240,
 	"return_chance": 0.05,
 	"home_chance": 0.005,
 	"decay_limit": 140,
