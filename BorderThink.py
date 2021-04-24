@@ -36,7 +36,7 @@ if args.theory == "contact":
 
 	parameters_list = [ { "abroad_travel_chance_nl": probability,
 						   "abroad_travel_chance_be": probability } \
-						   for probability in numpy.arange(0.000, 0.011, 0.001) ]
+						   for probability in numpy.arange(0.0000, 0.0101, 0.0001) ]
 elif args.theory == "target":
 	fixed_params = { **fixed_params,
 					 "abroad_travel_chance_be": 0.001,
@@ -48,7 +48,7 @@ elif args.theory == "target":
 					 "media_receptiveness": False }
 
 	parameters_list = [ { "domestic_travel_chance_nl": probability } \
-						   for probability in numpy.arange(0.000, 0.011, 0.001) ]
+						   for probability in numpy.arange(0.000, 0.051, 0.001) ]
 elif args.theory == "ethnocentrism":
 	fixed_params = { **fixed_params,
 					 "abroad_travel_chance_be": 0.001,
