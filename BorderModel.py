@@ -402,6 +402,13 @@ class BorderAgent(Agent):
 			if self.model.random.random() < self.ethnocentrism:
 				return
 
+		# Make sure the shift *always* happens for the Netherlands
+		if self.influence_sphere.country == "The Netherlands" and sound_origin_country == "The Netherlands":
+			# If the sound to be received is lower than the current average sound, don't take over this sound
+			# I know this is circular, but that's the point -- the shift in the Netherlands is a given, not something I want to test
+			if sound < statistics.mean(self.sound_repository):
+				return
+
 		# If the sound origin country is the home country, or the ethnocentrism wasn't a big enough influence this time,
 		# just adopt the sound
 		self.sound_repository.append(sound)
