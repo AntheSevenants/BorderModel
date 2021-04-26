@@ -14,7 +14,7 @@
 		"y": 50,
 		"radius": 15,
 		"population": 194,
-		"sound_mean": 0.9,
+		"sound_mean": 1,
 		"name": "Rotterdam",
 		"country": "The Netherlands",
 		"central": true
@@ -24,7 +24,7 @@
 		"y": 15,
 		"radius": 8,
 		"population": 18,
-		"sound_mean": 0.9,
+		"sound_mean": 1,
 		"name": "Hilversum",
 		"country": "The Netherlands",
 		"central": true
