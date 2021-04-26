@@ -84,6 +84,20 @@ elif args.theory == "media":
 
 	parameters_list = [ { "media_receptiveness": probability } \
 						   for probability in numpy.arange(0, 1.05, 0.05) ]
+# This theory is meant to test whether language change is accelerated when we increase
+# the domestic travel chance for the Netherlands
+elif args.theory == "nl_artefact_test":
+	fixed_params = { **fixed_params,
+					 "abroad_travel_chance_be": 0,
+					 "abroad_travel_chance_nl": 0,
+					 "domestic_travel_chance_be": 0,
+					 "scaled_ethnocentrism": False,
+					 "ethnocentrism_nl": 0,
+					 "ethnocentrism_be": 0,
+					 "media_receptiveness": False }
+
+	parameters_list = [ { "domestic_travel_chance_nl": probability } \
+						   for probability in numpy.arange(0.000, 0.051, 0.001) ]
 else:
 	print("Argument not recognised")
 	sys.exit(0)
