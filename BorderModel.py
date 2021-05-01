@@ -116,7 +116,7 @@ class BorderAgent(Agent):
 		if borders["right"] > 1:
 			borders["right"] = 1
 
-		initial_sound = round(self.model.random.uniform(borders["left"], borders["right"]), 2)
+		initial_sound = round(self.model.random.uniform(borders["left"], borders["right"]), 9)
 		self.sound_repository.append(initial_sound)
 
 	def step(self):
@@ -593,11 +593,11 @@ class BorderModel(Model):
 								"Belgium": None }
 		# Compute and set the means
 		for country in self.average_sounds:
-			self.average_sounds[country] = round(statistics.mean(average_sound_repository[country]), 2)
+			self.average_sounds[country] = round(statistics.mean(average_sound_repository[country]), 9)
 
 		for influence_sphere in self.influence_spheres:
 			self.average_sounds_spheres[influence_sphere.name] = \
-				round(statistics.mean(average_sound_repository_spheres[influence_sphere.name]), 2)
+				round(statistics.mean(average_sound_repository_spheres[influence_sphere.name]), 9)
 
 	# Get a sound from a central region to simulate media influence
 	def get_central_sound(self, country):
