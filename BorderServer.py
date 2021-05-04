@@ -96,7 +96,8 @@ model_params = {"width": width, "height": height,
                 "media_receptiveness": UserSettableParameter('slider', '📺 Media receptiveness', value=0.05, min_value=0, max_value=0.10, step=0.01),
                 "sound_mean_interval": 0.1,
                 "decay_limit": UserSettableParameter('slider', '🧠 Decay limit', value=140, min_value=1, max_value=200, step=1),
-                "border_heights": [ 124, 104 ]}
+                "border_heights": [ 124, 104 ],
+                "init_big_inventory": UserSettableParameter('checkbox', '🏁 Agents start with big inventory', value=True)}
 
 server = ModularServer(BorderModel,
                        [grid, chart, sound_chart, sound_repo_size_chart, avg_sound_chart],
