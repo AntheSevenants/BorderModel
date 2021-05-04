@@ -117,7 +117,11 @@ class BorderAgent(Agent):
 			borders["right"] = 1
 
 		initial_sound = round(self.model.random.uniform(borders["left"], borders["right"]), 9)
-		self.sound_repository.append(initial_sound)
+
+		if not self.model.init_big_inventory:
+			self.sound_repository.append(initial_sound)
+		else:
+			self.sound_repository += [initial_sound] * 140
 
 	def step(self):
 		self.travel_chance_time()
@@ -424,7 +428,8 @@ class BorderModel(Model):
 					   scaled_ethnocentrism=False,
 					   media_receptiveness=0.05,
 					   sound_mean_interval=0.1, decay_limit=140,
-					   border_heights=[ 74, 54 ]):
+					   border_heights=[ 74, 54 ],
+					   init_big_inventory=False):
 
 		self.width = width
 		self.height = height
@@ -453,6 +458,8 @@ class BorderModel(Model):
 		self.media_receptiveness = media_receptiveness
 
 		self.travel_probabilities = {} # probabilities of one sphere member travelling to another sphere
+
+		self.init_big_inventory = init_big_inventory
 
 		self.init_influence_spheres()
 		self.init_agents()
