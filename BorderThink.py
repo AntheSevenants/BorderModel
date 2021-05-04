@@ -22,7 +22,8 @@ fixed_params = {
 	"home_chance": 0.005,
 	"decay_limit": 140,
 	"sound_mean_interval": 0.1,
-	"border_heights": [ 124, 104 ]
+	"border_heights": [ 124, 104 ],
+	"init_big_inventory": True
 }
 
 if args.theory == "contact":
