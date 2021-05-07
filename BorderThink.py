@@ -50,8 +50,8 @@ elif args.theory == "target":
 					 "scaled_ethnocentrism": False,
 					 "media_receptiveness": False }
 
-	parameters_list = [ { "domestic_travel_chance_nl":1 /  pow(10, power) } \
-						   for power in [0] + numpy.arange(1, 8, 1) ]
+	parameters_list = [ { "domestic_travel_chance_nl": probability } \
+						   for probability in numpy.arange(0.000, 1, 0.100) ]
 elif args.theory == "ethnocentrism":
 	fixed_params = { **fixed_params,
 					 "abroad_travel_chance_be": 0.001,
