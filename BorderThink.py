@@ -35,9 +35,11 @@ if args.theory == "contact":
 					 "scaled_ethnocentrism": False,
 					 "media_receptiveness": False }
 
-	parameters_list = [ { "abroad_travel_chance_nl": pow(10, power),
-						   "abroad_travel_chance_be": pow(10, power) } \
+	parameters_list = [ { "abroad_travel_chance_nl": 1 / pow(10, power),
+						   "abroad_travel_chance_be": 1 / pow(10, power) } \
 						   for power in [0] + numpy.arange(1, 8, 1) ]
+
+	print(parameters_list)
 elif args.theory == "target":
 	fixed_params = { **fixed_params,
 					 "abroad_travel_chance_be": 0.001,
@@ -48,7 +50,7 @@ elif args.theory == "target":
 					 "scaled_ethnocentrism": False,
 					 "media_receptiveness": False }
 
-	parameters_list = [ { "domestic_travel_chance_nl": pow(10, power) } \
+	parameters_list = [ { "domestic_travel_chance_nl":1 /  pow(10, power) } \
 						   for power in [0] + numpy.arange(1, 8, 1) ]
 elif args.theory == "ethnocentrism":
 	fixed_params = { **fixed_params,
@@ -60,7 +62,7 @@ elif args.theory == "ethnocentrism":
 					 "media_receptiveness": False }
 
 	parameters_list = [ { "ethnocentrism_nl": 0.85,
-						  "ethnocentrism_be": pow(10, power) } \
+						  "ethnocentrism_be": 1 / pow(10, power) } \
 						   for power in [0] + numpy.arange(1, 8, 1) ]
 elif args.theory == "scaled_ethnocentrism":
 	fixed_params = { **fixed_params,
@@ -83,7 +85,7 @@ elif args.theory == "media":
 					 "ethnocentrism_nl": 0,
 					 "ethnocentrism_be": 0, }
 
-	parameters_list = [ { "media_receptiveness": pow(10, power) } \
+	parameters_list = [ { "media_receptiveness": 1 / pow(10, power) } \
 						   for power in [0] + numpy.arange(1, 8, 1) ]
 # This theory is meant to test whether language change is accelerated when we increase
 # the domestic travel chance for the Netherlands
