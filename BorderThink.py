@@ -38,8 +38,6 @@ if args.theory == "contact":
 	parameters_list = [ { "abroad_travel_chance_nl": 1 / pow(10, power),
 						   "abroad_travel_chance_be": 1 / pow(10, power) } \
 						   for power in [0] + numpy.arange(1, 8, 1) ]
-
-	print(parameters_list)
 elif args.theory == "target":
 	fixed_params = { **fixed_params,
 					 "abroad_travel_chance_be": 0.001,
