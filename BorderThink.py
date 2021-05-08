@@ -93,18 +93,23 @@ elif args.theory == "scaled_ethnocentrism":
 	print("Stage is unsupported for this theory and will be ignored")
 elif args.theory == "media":
 	fixed_params = { **fixed_params,
-					 "abroad_travel_chance_be": 0.001,
-					 "abroad_travel_chance_nl": 0.001,
 					 "domestic_travel_chance_be": 0.005,
 					 "domestic_travel_chance_nl": 0.005,
 					 "scaled_ethnocentrism": False,
 					 "ethnocentrism_nl": 0,
 					 "ethnocentrism_be": 0, }
 
-	print("Stage is currently unsupported for this theory and will be ignored")
+	if args.stage == 1: # guaranteed convergence
+		parameters_list = [ { "abroad_travel_chance_be": 0.001,
+					 		  "abroad_travel_chance_nl": 0.001,
+							  "media_receptiveness": probability } \
+							   for probability in numpy.arange(0, 1.05, 0.05) ]
+	elif args.stage == 2: # guaranteed divergence
+		parameters_list = [ { "abroad_travel_chance_be": 1 / pow(10, 7),
+					 		  "abroad_travel_chance_nl": 1 / pow(10, 7),
+							  "media_receptiveness": probability } \
+							   for probability in numpy.arange(0, 1.05, 0.05) ]
 
-	parameters_list = [ { "media_receptiveness": probability } \
-						   for probability in numpy.arange(0, 1.05, 0.05) ]
 # This theory is meant to test whether language change is accelerated when we increase
 # the domestic travel chance for the Netherlands
 elif args.theory == "nl_artefact_test":
