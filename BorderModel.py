@@ -116,7 +116,10 @@ class BorderAgent(Agent):
 		if borders["right"] > 1:
 			borders["right"] = 1
 
-		initial_sound = round(self.model.random.uniform(borders["left"], borders["right"]), 9)
+		if sound_mean != 0:
+			initial_sound = round(self.model.random.uniform(borders["left"], borders["right"]), 9)
+		else:
+			initial_sound = 0
 
 		if not self.model.init_big_inventory:
 			self.sound_repository.append(initial_sound)
