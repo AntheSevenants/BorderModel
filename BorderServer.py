@@ -98,7 +98,7 @@ model_params = {"width": width, "height": height,
                 "decay_limit": UserSettableParameter('slider', '🧠 Decay limit', value=140, min_value=1, max_value=200, step=1),
                 "border_heights": [ 124, 104 ],
                 "init_big_inventory": UserSettableParameter('checkbox', '🏁 Agents start with big inventory', value=True),
-                "target_accell_count": UserSettableParameter('slider', '🏎️ Target accelleration', value=1, min_value=1, max_value=140, step=1)}
+                "target_accel_count": UserSettableParameter('slider', '🏎️ Target acceleration', value=1, min_value=1, max_value=140, step=1)}
 
 server = ModularServer(BorderModel,
                        [grid, chart, sound_chart, sound_repo_size_chart, avg_sound_chart],
