@@ -61,6 +61,21 @@ elif args.theory == "target":
 	elif args.stage == 2: # range: 0.100 -> 1.00, step = 0.050
 		parameters_list = [ { "domestic_travel_chance_nl": probability } \
 							   for probability in numpy.arange(0.100, 1.050, 0.050) ]
+elif args.theory == "target2":
+	fixed_params = { **fixed_params,
+					 "abroad_travel_chance_be": 0.001,
+					 "abroad_travel_chance_nl": 0.001,
+					 "domestic_travel_chance_be": 0.005,
+					 "domestic_travel_chance_nl": 0.005,
+					 "ethnocentrism_nl": 0,
+					 "ethnocentrism_be": 0,
+					 "scaled_ethnocentrism": False,
+					 "media_receptiveness": False }
+
+	parameters_list = [ { "target_accel": acceleration_count } \
+							   for acceleration_count in range(1, 21, 1) ]
+
+	print("Stage is unsupported for this theory and will be ignored")
 elif args.theory == "ethnocentrism":
 	fixed_params = { **fixed_params,
 					 "domestic_travel_chance_be": 0.005,
