@@ -403,6 +403,8 @@ class BorderAgent(Agent):
 
 	# Adopt a sound
 	def adopt_sound(self, sound, sound_origin_country):
+		adoption_count = 1
+
 		# If the sound origin country is not the home country, implement the ethnocentrism
 		if sound_origin_country != self.influence_sphere.country:
 			# The higher the ethnocentrism value, the less likely an agent is to adopt the foreign variant
@@ -416,9 +418,14 @@ class BorderAgent(Agent):
 			if sound < statistics.mean(self.sound_repository):
 				return
 
+			# If target acceleration is activated, set the adoption count to the acceleration count defined in the model parameters
+			if self.model.target_accell_count:
+				adoption_count = self.model.target_accell_count
+
 		# If the sound origin country is the home country, or the ethnocentrism wasn't a big enough influence this time,
-		# just adopt the sound
-		self.sound_repository.append(sound)
+		# just adopt the sound as much as required
+		for adoption_turn in range(adoption_count):
+			self.sound_repository.append(sound)
 
 class BorderModel(Model):
 	def __init__(self, width, height, return_chance=0.05, home_chance=0.005,
@@ -432,7 +439,8 @@ class BorderModel(Model):
 					   media_receptiveness=0.05,
 					   sound_mean_interval=0.1, decay_limit=140,
 					   border_heights=[ 74, 54 ],
-					   init_big_inventory=False):
+					   init_big_inventory=False,
+					   target_accell_count=False):
 
 		self.width = width
 		self.height = height
@@ -463,6 +471,7 @@ class BorderModel(Model):
 		self.travel_probabilities = {} # probabilities of one sphere member travelling to another sphere
 
 		self.init_big_inventory = init_big_inventory
+		self.target_accell_count = target_accell_count
 
 		self.init_influence_spheres()
 		self.init_agents()
