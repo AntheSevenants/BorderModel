@@ -60,7 +60,7 @@ elif args.theory == "target":
 							   for probability in numpy.arange(0.000, 0.100, 0.010) ]
 	elif args.stage == 2: # range: 0.100 -> 0.500, step = 0.050
 		parameters_list = [ { "domestic_travel_chance_nl": probability } \
-							   for probability in numpy.arange(0.100, 0.500, 0.050) ]
+							   for probability in numpy.arange(0.100, 1.050, 0.050) ]
 elif args.theory == "ethnocentrism":
 	fixed_params = { **fixed_params,
 					 "domestic_travel_chance_be": 0.005,
