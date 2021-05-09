@@ -128,8 +128,8 @@ elif args.theory == "media":
 							  "media_receptiveness": probability } \
 							   for probability in numpy.arange(0, 1.05, 0.05) ]
 	elif args.stage == 2: # guaranteed divergence
-		parameters_list = [ { "abroad_travel_chance_be": 1 / pow(10, 7),
-					 		  "abroad_travel_chance_nl": 1 / pow(10, 7),
+		parameters_list = [ { "abroad_travel_chance_be": 1 / pow(10, 6),
+					 		  "abroad_travel_chance_nl": 1 / pow(10, 6),
 							  "media_receptiveness": probability } \
 							   for probability in numpy.arange(0, 1.05, 0.05) ]
 
