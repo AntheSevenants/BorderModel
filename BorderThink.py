@@ -96,6 +96,12 @@ elif args.theory == "ethnocentrism":
 							  "ethnocentrism_nl": 0.85,
 							  "ethnocentrism_be": probability } \
 							   for probability in numpy.arange(0, 1.01, 0.05) ]
+	elif args.stage == 3:
+		parameters_list = [ { "abroad_travel_chance_be": 0.0001,
+						 	  "abroad_travel_chance_nl": 0.0001,
+							  "ethnocentrism_nl": 0.85,
+							  "ethnocentrism_be": probability } \
+							   for probability in numpy.arange(0.90, 1.01, 0.01) ]
 elif args.theory == "scaled_ethnocentrism":
 	fixed_params = { **fixed_params,
 					 "abroad_travel_chance_be": 0.001,
