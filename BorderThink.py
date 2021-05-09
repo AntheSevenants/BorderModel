@@ -72,7 +72,7 @@ elif args.theory == "target2":
 					 "scaled_ethnocentrism": False,
 					 "media_receptiveness": False }
 
-	parameters_list = [ { "target_accel": acceleration_count } \
+	parameters_list = [ { "target_accel_count": acceleration_count } \
 							   for acceleration_count in range(1, 21, 1) ]
 
 	print("Stage is unsupported for this theory and will be ignored")
@@ -155,7 +155,7 @@ elif args.theory == "nl_artefact_test2":
 					 "ethnocentrism_be": 0,
 					 "media_receptiveness": False }
 
-	parameters_list = [ { "target_accel": acceleration_count } \
+	parameters_list = [ { "target_accel_count": acceleration_count } \
 							   for acceleration_count in range(1, 21, 1) ]
 
 	print("Stage is unsupported for this theory and will be ignored")
