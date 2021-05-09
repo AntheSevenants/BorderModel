@@ -141,6 +141,24 @@ elif args.theory == "nl_artefact_test":
 
 	parameters_list = [ { "domestic_travel_chance_nl": probability } \
 						   for probability in numpy.arange(0.000, 0.051, 0.001) ]
+
+# This theory is meant to test whether language change is accelerated when we increase
+# the target acceleration count
+elif args.theory == "nl_artefact_test2":
+	fixed_params = { **fixed_params,
+					 "abroad_travel_chance_be": 0,
+					 "abroad_travel_chance_nl": 0,
+					 "domestic_travel_chance_be": 0,
+					 "domestic_travel_chance_nl": 0.005,
+					 "scaled_ethnocentrism": False,
+					 "ethnocentrism_nl": 0,
+					 "ethnocentrism_be": 0,
+					 "media_receptiveness": False }
+
+	parameters_list = [ { "target_accel": acceleration_count } \
+							   for acceleration_count in range(1, 21, 1) ]
+
+	print("Stage is unsupported for this theory and will be ignored")
 else:
 	print("Argument not recognised")
 	sys.exit(0)
