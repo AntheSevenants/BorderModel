@@ -182,6 +182,6 @@ for run in run_data.iloc:
 	pandas_runs.append(panda)
 
 mother_panda = pandas.concat(pandas_runs)
-mother_panda.to_csv("{}.csv".format(args.theory), sep=";")
+mother_panda.to_csv("{}_stage{}.csv".format(args.theory, args.stage), sep=";")
 
 print("Succesfully written report. Exiting...")
