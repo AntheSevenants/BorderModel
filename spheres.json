@@ -4,7 +4,7 @@
 		"y": 90,
 		"radius": 10,
 		"population": 25,
-		"sound_mean": 0,
+		"sound_mean": 0.00001,
 		"name": "Tilburg",
 		"country": "The Netherlands",
 		"central": false
@@ -34,7 +34,7 @@
 		"y": 110,
 		"radius": 7,
 		"population": 15,
-		"sound_mean": 0,
+		"sound_mean": 0.00001,
 		"name": "Breda",
 		"country": "The Netherlands",
 		"central": false
@@ -44,7 +44,7 @@
 		"y": 130,
 		"radius": 12,
 		"population": 174,
-		"sound_mean": 0,
+		"sound_mean": 0.00001,
 		"name": "Antwerpen",
 		"country": "Belgium",
 		"central": true
@@ -54,7 +54,7 @@
 		"y": 130,
 		"radius": 7,
 		"population": 9,
-		"sound_mean": 0,
+		"sound_mean": 0.00001,
 		"name": "Turnhout",
 		"country": "Belgium",
 		"central": true
@@ -64,7 +64,7 @@
 		"y": 180,
 		"radius": 7,
 		"population": 24,
-		"sound_mean": 0,
+		"sound_mean": 0.00001,
 		"name": "Mechelen",
 		"country": "Belgium",
 		"central": true
@@ -74,7 +74,7 @@
 		"y": 220,
 		"radius": 6,
 		"population": 23,
-		"sound_mean": 0,
+		"sound_mean": 0.00001,
 		"name": "Leuven",
 		"country": "Belgium",
 		"central": true
@@ -84,7 +84,7 @@
 		"y": 190,
 		"radius": 5,
 		"population": 12,
-		"sound_mean": 0,
+		"sound_mean": 0.00001,
 		"name": "Dendermonde",
 		"country": "Belgium",
 		"central": false
