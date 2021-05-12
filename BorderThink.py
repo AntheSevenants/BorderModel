@@ -55,9 +55,9 @@ elif args.theory == "target":
 					 "media_receptiveness": False }
 
 
-	if args.stage == 1: # range: 0 -> 0.100, step = 0.010
+	if args.stage == 1: # range: 0 -> 0.100, step = 0.001
 		parameters_list = [ { "domestic_travel_chance_nl": probability } \
-							   for probability in numpy.arange(0.000, 0.100, 0.010) ]
+							   for probability in numpy.arange(0.000, 0.101, 0.001) ]
 	elif args.stage == 2: # range: 0.100 -> 1.00, step = 0.050
 		parameters_list = [ { "domestic_travel_chance_nl": probability } \
 							   for probability in numpy.arange(0.100, 1.050, 0.050) ]
@@ -89,13 +89,13 @@ elif args.theory == "ethnocentrism":
 						 	  "abroad_travel_chance_nl": 0.001,
 							  "ethnocentrism_nl": 0.85,
 							  "ethnocentrism_be": probability } \
-							   for probability in numpy.arange(0, 1.01, 0.05) ]
+							   for probability in numpy.arange(0, 1.01, 0.01) ]
 	elif args.stage == 2:
 		parameters_list = [ { "abroad_travel_chance_be": 0.0001,
 						 	  "abroad_travel_chance_nl": 0.0001,
 							  "ethnocentrism_nl": 0.85,
 							  "ethnocentrism_be": probability } \
-							   for probability in numpy.arange(0, 1.01, 0.05) ]
+							   for probability in numpy.arange(0, 1.01, 0.01) ]
 	elif args.stage == 3:
 		parameters_list = [ { "abroad_travel_chance_be": 0.0001,
 						 	  "abroad_travel_chance_nl": 0.0001,
