@@ -39,7 +39,7 @@ if args.theory == "contact":
 	if args.stage == 1: # range: 0 -> 0.0100, step = 0.0010
 		parameters_list = [ { "abroad_travel_chance_nl": probability,
 						   "abroad_travel_chance_be": probability } \
-						   for probability in numpy.arange(0.0000, 0.0101, 0.001) ]
+						   for probability in numpy.arange(0.0000, 0.0101, 0.0001) ]
 	elif args.stage == 2: # range: 1/10 -> 1/10^7
 		parameters_list = [ { "abroad_travel_chance_nl": 1 / pow(10, power),
 							   "abroad_travel_chance_be": 1 / pow(10, power) } \
